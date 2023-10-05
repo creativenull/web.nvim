@@ -4,7 +4,7 @@ The all-in-one solution to setup a web development environment in neovim.
 
 ## Features
 
-- No `lspconfig` plugin needed, we use builtin `vim.lsp.start()`
+- No [`lspconfig` plugin][lspconfig-url] needed, we use builtin `vim.lsp.start()`
 - Automatically setup lsp servers based on filetype (similar to `lspconfig`), supports `mason.nvim` if present
   - `tsserver`
   - `@volar/vue-language-server`
@@ -22,4 +22,5 @@ The all-in-one solution to setup a web development environment in neovim.
 - Code actions on save
 - Debugging: [nvim-dap][nvim-dap-url] is required
 
+[lspconfig-url]: https://github.com/neovim/nvim-lspconfig
 [nvim-dap-url]: https://github.com/mfussenegger/nvim-dap
