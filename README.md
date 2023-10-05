@@ -1,4 +1,4 @@
-# Web-tools.nvim
+# web-tools.nvim
 
 The all-in-one solution to setup a web development environment in neovim.
 
