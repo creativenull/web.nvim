@@ -1,4 +1,4 @@
-local event = require('web-tools.event')
+local event = require("web-tools.event")
 local utils = require("web-tools.utils")
 local M = {}
 
@@ -17,7 +17,15 @@ local function config(tsserver_opts)
 		cmd = { "typescript-language-server", "--stdio" },
 		on_attach = M.on_attach,
 		root_dir = vim.fs.dirname(vim.fs.find(M.root_dirs, { upward = true })[1]),
-		init_options = { hostInfo = utils.host_info() },
+		init_options = {
+			hostInfo = utils.host_info(),
+			tsserver = {
+				path = string.format(
+					"%s/node_modules/typescript/lib/tsserver.js",
+					vim.fs.dirname(vim.fs.find({ "node_modules" }, { upward = true })[1])
+				),
+			},
+		},
 		settings = {
 			javascript = {
 				inlayHints = {
@@ -103,7 +111,7 @@ function M.register_events(opts)
 end
 
 function M.setup(opts)
-  M.register_events(opts)
+	M.register_events(opts)
 end
 
 return M
