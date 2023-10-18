@@ -77,6 +77,16 @@ function M.register_commands(bufnr)
 			},
 		})
 	end, { range = true })
+
+	vim.api.nvim_buf_create_user_command(bufnr, "WebToolsTsserverAllActions", function(cmd)
+		vim.lsp.buf.code_action({
+			context = { only = { "source", "quickfix", "refactor" }, triggerKind = 1 },
+			range = {
+				["start"] = { cmd.line1, 0 },
+				["end"] = { cmd.line2, 0 },
+			},
+		})
+	end, { range = true })
 end
 
 function M.register_events(opts)
