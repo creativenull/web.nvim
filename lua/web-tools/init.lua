@@ -1,7 +1,4 @@
-local commands = require("web-tools.commands")
-local events = require("web-tools.events")
 local validator = require("web-tools.validator")
-
 local M = {}
 
 local default_setup_opts = {
@@ -10,12 +7,11 @@ local default_setup_opts = {
 
 	lsp = {
 		tsserver = {
-			workspaces = true,
-
-			-- Inlay hints are opt-out feature in nvim v0.10.*
-			-- which means they are enabled by default from v0.10 and onwards
+			-- Inlay hints are opt-out feature in nvim >= v0.10
+			-- which means they will be enabled by default from v0.10 and onwards
 			inlay_hints = vim.fn.has("nvim-0.10") == 1,
 
+      -- TODO: wait for nvim PR to be stable/merged (https://github.com/neovim/neovim/pull/22598)
 			code_actions_on_save = {
 				"source.organizeImports.ts",
 				"source.fixAll.ts",
@@ -41,8 +37,9 @@ function M.setup(setup_opts)
 		setup_opts = default_setup_opts
 	end
 
-	events.register(setup_opts)
-	commands.register(setup_opts)
+  if setup_opts.lsp.tsserver then
+    require('web-tools.lsp.tsserver').setup(setup_opts)
+  end
 end
 
 return M
