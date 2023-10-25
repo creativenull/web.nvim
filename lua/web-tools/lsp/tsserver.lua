@@ -100,7 +100,7 @@ end
 function M.register_events(opts)
 	vim.api.nvim_create_autocmd("FileType", {
 		desc = "web-tools: start tsserver lsp server and client",
-		group = event.group(),
+		group = event.group("tsserver"),
 		pattern = M.filetypes,
 		callback = function(ev)
 			M.on_attach = opts.on_attach
