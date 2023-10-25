@@ -21,6 +21,14 @@ local default_setup_opts = {
 				"source.sortImports.ts",
 			},
 		},
+
+		eslint = {
+			workspace = true,
+			flat_config = false,
+			code_actions_on_save = {
+				"source.fixAll.eslint",
+			},
+		},
 	},
 }
 
@@ -39,6 +47,10 @@ function M.setup(setup_opts)
 
 	if setup_opts.lsp.tsserver then
 		require("web-tools.lsp.tsserver").setup(setup_opts)
+	end
+
+	if setup_opts.lsp.eslint then
+		require("web-tools.lsp.eslint").setup(setup_opts)
 	end
 end
 
