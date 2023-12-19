@@ -1,4 +1,4 @@
-# web-tools.nvim
+# web.nvim
 
 The all-in-one solution to setup a web development environment in neovim.
 
@@ -7,9 +7,9 @@ The all-in-one solution to setup a web development environment in neovim.
 - No [`lspconfig` plugin][lspconfig-url] needed, we use builtin `vim.lsp.start()`
 - Automatically setup lsp servers based on filetype (similar to `lspconfig`), supports [`mason.nvim`][mason-url] if present
   - `tsserver`
-- Run `package.json` scripts via `:WebToolsRun`
-- Refactor code with `:WebToolsRefactorAction`
-- Quickfix code with `:WebToolsQuickfixAction`
+- Run `package.json` scripts via `:WebRun`
+- Refactor code with `:WebRefactorAction`
+- Quickfix code with `:WebQuickfixAction`
 - Code actions on save
 - Debugging: [nvim-dap][nvim-dap-url] is required
 

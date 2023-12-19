@@ -56,7 +56,7 @@ local function config(tsserver_opts)
 end
 
 function M.register_commands(bufnr)
-	vim.api.nvim_buf_create_user_command(bufnr, "WebToolsTsserverRefactorAction", function(cmd)
+	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverRefactorAction", function(cmd)
 		vim.lsp.buf.code_action({
 			context = { only = { "refactor" }, triggerKind = 1 },
 			range = {
@@ -66,7 +66,7 @@ function M.register_commands(bufnr)
 		})
 	end, { range = true })
 
-	vim.api.nvim_buf_create_user_command(bufnr, "WebToolsTsserverQuickfixAction", function(cmd)
+	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverQuickfixAction", function(cmd)
 		vim.lsp.buf.code_action({
 			context = { only = { "quickfix" }, triggerKind = 1 },
 			range = {
@@ -76,7 +76,7 @@ function M.register_commands(bufnr)
 		})
 	end, { range = true })
 
-	vim.api.nvim_buf_create_user_command(bufnr, "WebToolsTsserverSourceAction", function(cmd)
+	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverSourceAction", function(cmd)
 		vim.lsp.buf.code_action({
 			context = { only = { "source" }, triggerKind = 1 },
 			range = {
@@ -86,7 +86,7 @@ function M.register_commands(bufnr)
 		})
 	end, { range = true })
 
-	vim.api.nvim_buf_create_user_command(bufnr, "WebToolsTsserverAllActions", function(cmd)
+	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverAllActions", function(cmd)
 		vim.lsp.buf.code_action({
 			context = { only = { "source", "quickfix", "refactor" }, triggerKind = 1 },
 			range = {
