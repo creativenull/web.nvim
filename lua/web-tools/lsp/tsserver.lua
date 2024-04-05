@@ -86,6 +86,17 @@ function M.register_commands(bufnr)
 		})
 	end, { range = true })
 
+	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverOrganizeImports", function(cmd)
+		vim.lsp.buf.code_action({
+			context = { only = { "source.organizeImports.ts" }, triggerKind = 1 },
+      apply = true,
+			range = {
+				["start"] = { cmd.line1, 0 },
+				["end"] = { cmd.line2, 0 },
+			},
+		})
+	end, { range = true })
+
 	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverAllActions", function(cmd)
 		vim.lsp.buf.code_action({
 			context = { only = { "source", "quickfix", "refactor" }, triggerKind = 1 },
