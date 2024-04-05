@@ -6,6 +6,39 @@ M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact"
 M.root_dirs = { "tsconfig.json", "jsconfig.json" }
 M.on_attach = function(_, _) end
 
+local cmd = "typescript-language-server"
+
+local function get_project_tsserverjs()
+	local project_path = utils.fs.find_nearest({ "node_modules" })
+	if project_path == nil then
+		return nil
+	end
+
+	local path = string.format("%s/node_modules/typescript/lib/tsserver.js", project_path)
+	if vim.fn.filereadable(path) == 0 then
+		return nil
+	end
+
+	return path
+end
+
+local function validate()
+	if vim.fn.executable(cmd) == 0 then
+		utils.err.writeln(string.format("%s: Command not found. Check :help web-tools-tsserver-lsp for more info.", cmd))
+		return false
+	end
+
+	local is_global = vim.fn.executable('tsc') == 1
+	if not is_global and get_project_tsserverjs() == nil then
+		utils.err.writeln(
+			"Typescript not installed in project, run `npm install -D typescript`. Check :help web-tools-tsserver-tsc for more info."
+		)
+		return false
+	end
+
+	return true
+end
+
 local function config(tsserver_opts)
 	local inlay_hints = false
 	if tsserver_opts.inlay_hints then
@@ -14,17 +47,12 @@ local function config(tsserver_opts)
 
 	return {
 		name = "tsserver",
-		cmd = { "typescript-language-server", "--stdio" },
+		cmd = { cmd, "--stdio" },
 		on_attach = M.on_attach,
-		root_dir = vim.fs.dirname(vim.fs.find(M.root_dirs, { upward = true })[1]),
+		root_dir = utils.fs.find_nearest(M.root_dirs),
 		init_options = {
 			hostInfo = utils.host_info(),
-			tsserver = {
-				path = string.format(
-					"%s/node_modules/typescript/lib/tsserver.js",
-					vim.fs.dirname(vim.fs.find({ "node_modules" }, { upward = true })[1])
-				),
-			},
+			tsserver = { path = get_project_tsserverjs() },
 		},
 		settings = {
 			javascript = {
@@ -108,21 +136,21 @@ function M.register_commands(bufnr)
 	end, { range = true })
 end
 
-function M.register_events(opts)
+function M.setup(opts)
 	vim.api.nvim_create_autocmd("FileType", {
 		desc = "web-tools: start tsserver lsp server and client",
 		group = event.group("tsserver"),
 		pattern = M.filetypes,
 		callback = function(ev)
+			if not validate() then
+				return
+			end
+
 			M.on_attach = opts.on_attach
 			vim.lsp.start(config(opts.lsp.tsserver))
 			M.register_commands(ev.buf)
 		end,
 	})
-end
-
-function M.setup(opts)
-	M.register_events(opts)
 end
 
 return M

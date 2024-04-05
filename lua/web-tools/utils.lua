@@ -5,4 +5,16 @@ function M.host_info()
 	return string.format("NVIM v%d.%d.%d", ver.major, ver.minor, ver.patch)
 end
 
+M.fs = {}
+
+function M.fs.find_nearest(list)
+	return vim.fs.dirname(vim.fs.find({ "node_modules" }, { upward = true })[1])
+end
+
+M.err = {}
+
+function M.err.writeln(msg)
+  vim.api.nvim_echo({ { string.format("web-tools: %s", msg), "WarningMsg" } }, true, {})
+end
+
 return M
