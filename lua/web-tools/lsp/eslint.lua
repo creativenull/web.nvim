@@ -74,7 +74,7 @@ function M.register_commands(bufnr)
 	end, { range = true })
 end
 
-function M.register_events(opts)
+function M.setup(opts)
 	vim.api.nvim_create_autocmd("FileType", {
 		desc = "web-tools: start eslint lsp server and client",
 		group = event.group("eslint"),
@@ -85,10 +85,6 @@ function M.register_events(opts)
 			M.register_commands(ev.buf)
 		end,
 	})
-end
-
-function M.setup(opts)
-	M.register_events(opts)
 end
 
 return M
