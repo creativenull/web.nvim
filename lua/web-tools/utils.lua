@@ -8,7 +8,7 @@ end
 M.fs = {}
 
 function M.fs.find_nearest(list)
-	return vim.fs.dirname(vim.fs.find({ "node_modules" }, { upward = true })[1])
+	return vim.fs.dirname(vim.fs.find(list, { upward = true })[1])
 end
 
 M.err = {}
