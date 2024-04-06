@@ -1,3 +1,4 @@
+local shared = require("web-tools.lsp._shared")
 local event = require("web-tools.event")
 local utils = require("web-tools.utils")
 local M = {}
@@ -24,11 +25,13 @@ end
 
 local function validate()
 	if vim.fn.executable(cmd) == 0 then
-		utils.err.writeln(string.format("%s: Command not found. Check :help web-tools-tsserver-lsp for more info.", cmd))
+		utils.err.writeln(
+			string.format("%s: Command not found. Check :help web-tools-tsserver-lsp for more info.", cmd)
+		)
 		return false
 	end
 
-	local is_global = vim.fn.executable('tsc') == 1
+	local is_global = vim.fn.executable("tsc") == 1
 	if not is_global and get_project_tsserverjs() == nil then
 		utils.err.writeln(
 			"Typescript not installed in project, run `npm install -D typescript`. Check :help web-tools-tsserver-tsc for more info."
@@ -84,56 +87,24 @@ local function config(tsserver_opts)
 end
 
 function M.register_commands(bufnr)
-	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverRefactorAction", function(cmd)
-		vim.lsp.buf.code_action({
-			context = { only = { "refactor" }, triggerKind = 1 },
-			range = {
-				["start"] = { cmd.line1, 0 },
-				["end"] = { cmd.line2, 0 },
-			},
+	-- https://www.reddit.com/r/neovim/comments/lwz8l7/comment/gpkueno/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverOrganizeImports", function()
+		vim.lsp.buf.execute_command({
+			command = "_typescript.organizeImports",
+			arguments = { vim.api.nvim_buf_get_name(0) },
+			title = "",
 		})
-	end, { range = true })
+	end, {})
 
-	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverQuickfixAction", function(cmd)
-		vim.lsp.buf.code_action({
-			context = { only = { "quickfix" }, triggerKind = 1 },
-			range = {
-				["start"] = { cmd.line1, 0 },
-				["end"] = { cmd.line2, 0 },
-			},
+	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverGoToSourceDefinition", function()
+		local params = vim.lsp.util.make_position_params(vim.api.nvim_get_current_win())
+		vim.lsp.buf.execute_command({
+			command = "_typescript.goToSourceDefinition",
+			arguments = { params.textDocument.uri, params.position },
 		})
-	end, { range = true })
+	end, {})
 
-	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverSourceAction", function(cmd)
-		vim.lsp.buf.code_action({
-			context = { only = { "source" }, triggerKind = 1 },
-			range = {
-				["start"] = { cmd.line1, 0 },
-				["end"] = { cmd.line2, 0 },
-			},
-		})
-	end, { range = true })
-
-	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverOrganizeImports", function(cmd)
-		vim.lsp.buf.code_action({
-			context = { only = { "source.organizeImports.ts" }, triggerKind = 1 },
-      apply = true,
-			range = {
-				["start"] = { cmd.line1, 0 },
-				["end"] = { cmd.line2, 0 },
-			},
-		})
-	end, { range = true })
-
-	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverAllActions", function(cmd)
-		vim.lsp.buf.code_action({
-			context = { only = { "source", "quickfix", "refactor" }, triggerKind = 1 },
-			range = {
-				["start"] = { cmd.line1, 0 },
-				["end"] = { cmd.line2, 0 },
-			},
-		})
-	end, { range = true })
+	shared.register_common_user_commands(bufnr)
 end
 
 function M.setup(opts)
