@@ -1,3 +1,5 @@
+local lsp_shared = require("web-tools.lsp._shared")
+local event = require("web-tools.event")
 local validator = require("web-tools.validator")
 local M = {}
 
@@ -52,6 +54,17 @@ function M.setup(setup_opts)
 	if setup_opts.lsp.eslint then
 		require("web-tools.lsp.eslint").setup(setup_opts)
 	end
+
+	vim.api.nvim_create_autocmd("LspAttach", {
+		group = event.group("default"),
+		callback = function(ev)
+			local bufnr = ev.buf
+			local client = vim.lsp.get_client_by_id(ev.data.client_id)
+			vim.print("We attached: " .. client.name)
+
+			lsp_shared.register_common_user_commands(bufnr)
+		end,
+	})
 end
 
 return M

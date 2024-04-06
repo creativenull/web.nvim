@@ -1,4 +1,3 @@
-local shared = require("web-tools.lsp._shared")
 local event = require("web-tools.event")
 local utils = require("web-tools.utils")
 local M = {}
@@ -103,8 +102,6 @@ function M.register_commands(bufnr)
 			arguments = { params.textDocument.uri, params.position },
 		})
 	end, {})
-
-	shared.register_common_user_commands(bufnr)
 end
 
 function M.setup(opts)
