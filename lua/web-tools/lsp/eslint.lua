@@ -56,20 +56,10 @@ local function config(eslint_opts)
 end
 
 function M.register_commands(bufnr)
-	vim.api.nvim_buf_create_user_command(bufnr, "WebEslintQuickfixAction", function(usr_cmd)
-		vim.lsp.buf.code_action({
-			context = { only = { "quickfix" }, triggerKind = 1 },
-			range = {
-				["start"] = { usr_cmd.line1, 0 },
-				["end"] = { usr_cmd.line2, 0 },
-			},
-		})
-	end, { range = true })
-
 	vim.api.nvim_buf_create_user_command(bufnr, "WebEslintFixAll", function(usr_cmd)
 		vim.lsp.buf.code_action({
 			context = { only = { "source.fixAll.eslint" }, triggerKind = 1 },
-      apply = true,
+			apply = true,
 			range = {
 				["start"] = { usr_cmd.line1, 0 },
 				["end"] = { usr_cmd.line2, 0 },
