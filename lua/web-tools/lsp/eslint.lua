@@ -3,7 +3,15 @@ local event = require("web-tools.event")
 local M = {}
 
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
-M.root_dirs = { ".eslintrc", ".eslintrc.cjs", ".eslintrc.js", ".eslintrc.json", ".eslintrc.yaml", ".eslintrc.yml" }
+M.root_dirs = {
+	".eslintrc",
+	".eslintrc.cjs",
+	".eslintrc.js",
+	".eslintrc.ts",
+	".eslintrc.json",
+	".eslintrc.yaml",
+	".eslintrc.yml",
+}
 M.on_attach = function(_, _) end
 
 local cmd = "vscode-eslint-language-server"
