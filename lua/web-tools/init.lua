@@ -59,9 +59,6 @@ function M.setup(setup_opts)
 		group = event.group("default"),
 		callback = function(ev)
 			local bufnr = ev.buf
-			local client = vim.lsp.get_client_by_id(ev.data.client_id)
-			vim.print("We attached: " .. client.name)
-
 			lsp_shared.register_common_user_commands(bufnr)
 		end,
 	})
