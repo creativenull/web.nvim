@@ -1,13 +1,23 @@
 local utils = require("web-tools.utils")
 local M = {}
 
+function M.get_executable()
+	local tool = string.format("%s/node_modules/.bin/prettier", vim.loop.cwd())
+
+	if vim.fn.filereadable(tool) == 0 then
+		return ""
+	end
+
+	return tool
+end
+
 function M.format()
 	local buf = vim.api.nvim_get_current_buf()
 	local filename = vim.api.nvim_buf_get_name(buf)
 	local bufcontents = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-	local tool = string.format("%s/node_modules/.bin/prettier", vim.loop.cwd())
+	local tool = M.get_executable()
 
-	if vim.fn.filereadable(tool) == 0 then
+	if tool == "" then
 		utils.err.writeln("Prettier not installed. Install with `npm i -D prettier`.")
 		return
 	end
