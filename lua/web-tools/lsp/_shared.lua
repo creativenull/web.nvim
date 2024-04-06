@@ -1,12 +1,12 @@
 local M = {}
 
 function M.register_common_user_commands(bufnr)
-	vim.api.nvim_buf_create_user_command(bufnr, "WebQuickfixAction", function(usr_cmd)
+	vim.api.nvim_buf_create_user_command(bufnr, "WebQuickfixAction", function(cmd)
 		vim.lsp.buf.code_action({
 			context = { only = { "quickfix" }, triggerKind = 1 },
 			range = {
-				["start"] = { usr_cmd.line1, 0 },
-				["end"] = { usr_cmd.line2, 0 },
+				["start"] = { cmd.line1, 0 },
+				["end"] = { cmd.line2, 0 },
 			},
 		})
 	end, { range = true })
