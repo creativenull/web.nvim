@@ -96,11 +96,34 @@ function M.register_commands(bufnr)
 	end, {})
 
 	vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverGoToSourceDefinition", function()
-		local params = vim.lsp.util.make_position_params(vim.api.nvim_get_current_win())
-		vim.lsp.buf.execute_command({
+		local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "tsserver" })
+		if vim.tbl_isempty(clients) then
+			return
+		end
+
+		local client = clients[1]
+		local winid = vim.api.nvim_get_current_win()
+		local handler = function(_, result)
+			if result == nil or vim.tbl_isempty(result) then
+				return
+			end
+
+			local response = result[1]
+			local fname = vim.uri_to_fname(response.uri)
+			local lnum = response.range.start.line
+			local col = response.range.start.character
+
+			vim.cmd(string.format("edit %s", fname))
+			vim.api.nvim_win_set_cursor(winid, { lnum + 1, col })
+		end
+
+		vim.api.nvim_notify("web-tools: Opening source file", vim.log.levels.WARN, {})
+
+		local params = vim.lsp.util.make_position_params(winid)
+		client.request("workspace/executeCommand", {
 			command = "_typescript.goToSourceDefinition",
 			arguments = { params.textDocument.uri, params.position },
-		})
+		}, handler, bufnr)
 	end, {})
 end
 
