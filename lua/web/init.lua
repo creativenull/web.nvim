@@ -58,8 +58,7 @@ function M.setup(setup_opts)
 	vim.api.nvim_create_autocmd("LspAttach", {
 		group = event.group("default"),
 		callback = function(ev)
-			local bufnr = ev.buf
-			lsp_shared.register_common_user_commands(bufnr)
+			lsp_shared.register_common_user_commands(ev.buf)
 		end,
 	})
 end
