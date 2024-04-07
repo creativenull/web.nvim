@@ -32,16 +32,7 @@ function M.register_common_user_commands(bufnr)
 		})
 	end, { range = true })
 
-	vim.api.nvim_buf_create_user_command(bufnr, "WebFormat", function()
-		local clients = vim.lsp.get_active_clients({ name = "eslint" })
-		if #clients == 1 then
-			vim.lsp.buf.format({ name = "eslint" })
-		end
-
-		if prettier.get_executable() ~= "" then
-			prettier.format()
-		end
-	end, {})
+	vim.api.nvim_buf_create_user_command(bufnr, "WebLspFormat", require("web.format").handle, {})
 end
 
 return M

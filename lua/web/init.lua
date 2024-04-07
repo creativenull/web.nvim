@@ -64,4 +64,6 @@ function M.setup(setup_opts)
 	})
 end
 
+M.format = require('web.format').handle
+
 return M
