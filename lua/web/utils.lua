@@ -14,7 +14,7 @@ end
 M.err = {}
 
 function M.err.writeln(msg)
-  vim.api.nvim_echo({ { string.format("[web.nvim] %s", msg), "WarningMsg" } }, true, {})
+  vim.api.nvim_notify(string.format("[web.nvim] %s", msg), vim.log.levels.WARN, {})
 end
 
 return M
