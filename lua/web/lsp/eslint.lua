@@ -41,7 +41,7 @@ local function config(eslint_opts)
 				enable = false,
 				mode = "all",
 			},
-			format = { enable = true },
+			format = true,
 			quiet = false,
 			onIgnoredFiles = "off",
 			rulesCustomizations = {},
