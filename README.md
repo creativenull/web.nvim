@@ -17,7 +17,7 @@ The all-in-one solution to setup a web development environment in neovim.
   - Go to source definition, helpful when you do not want d.ts but direct to source file (for example, go to .js file instead of d.ts definition) - `:WebTsserverGoToSourceDefinition`
 - Eslint specific
   - Fix eslint errors - `:WebEslintFixAll`
-- Run `package.json` scripts via `:WebRun` (WIP)
+- Run `package.json` scripts via `:WebRun`
 - Debugging: [nvim-dap][nvim-dap-url] is required (WIP)
 
 [lspconfig-url]: https://github.com/neovim/nvim-lspconfig
