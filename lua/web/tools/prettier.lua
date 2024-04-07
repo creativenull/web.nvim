@@ -3,12 +3,15 @@ local M = {}
 
 function M.get_executable()
 	local tool = string.format("%s/node_modules/.bin/prettier", vim.loop.cwd())
+	local global_tool = vim.fn.exepath("prettier")
 
-	if vim.fn.filereadable(tool) == 0 then
+	if vim.fn.filereadable(tool) == 0 and vim.fn.filereadable(global_tool) == 0 then
 		return ""
+	elseif vim.fn.filereadable(tool) == 1 and vim.fn.filereadable(global_tool) == 0 then
+		return tool
+	else
+		return global_tool
 	end
-
-	return tool
 end
 
 function M.format()
