@@ -1,6 +1,16 @@
 local utils = require("web.utils")
 local M = {}
 
+local _allowed = {
+	"javascript",
+	"javascriptreact",
+	"typescript",
+	"typescriptreact",
+	"css",
+	"html",
+	"json",
+}
+
 function M.get_executable()
 	local tool = string.format("%s/node_modules/.bin/prettier", vim.loop.cwd())
 	local global_tool = vim.fn.exepath("prettier")
@@ -12,6 +22,11 @@ function M.get_executable()
 	else
 		return global_tool
 	end
+end
+
+function M.can_format()
+	local ft = vim.api.nvim_buf_get_option(vim.api.nvim_get_current_buf(), "filetype")
+	return M.get_executable() ~= "" and vim.tbl_contains(_allowed, ft)
 end
 
 function M.format()
