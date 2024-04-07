@@ -27,7 +27,7 @@ end
 
 local function config(eslint_opts)
 	return {
-		name = "eslint",
+		name = "eslint-lsp",
 		cmd = { cmd, "--stdio" },
 		on_attach = M.on_attach,
 		root_dir = utils.fs.find_nearest(M.root_dirs),
