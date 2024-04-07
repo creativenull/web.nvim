@@ -1,6 +1,6 @@
-local lsp_shared = require("web-tools.lsp._shared")
-local event = require("web-tools.event")
-local validator = require("web-tools.validator")
+local lsp_shared = require("web.lsp._shared")
+local event = require("web.event")
+local validator = require("web.validator")
 local M = {}
 
 local default_setup_opts = {
@@ -48,11 +48,11 @@ function M.setup(setup_opts)
 	end
 
 	if setup_opts.lsp.tsserver then
-		require("web-tools.lsp.tsserver").setup(setup_opts)
+		require("web.lsp.tsserver").setup(setup_opts)
 	end
 
 	if setup_opts.lsp.eslint then
-		require("web-tools.lsp.eslint").setup(setup_opts)
+		require("web.lsp.eslint").setup(setup_opts)
 	end
 
 	vim.api.nvim_create_autocmd("LspAttach", {

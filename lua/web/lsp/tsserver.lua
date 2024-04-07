@@ -1,5 +1,5 @@
-local event = require("web-tools.event")
-local utils = require("web-tools.utils")
+local event = require("web.event")
+local utils = require("web.utils")
 local M = {}
 
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
@@ -25,7 +25,7 @@ end
 local function validate()
 	if vim.fn.executable(cmd) == 0 then
 		utils.err.writeln(
-			string.format("%s: Command not found. Check :help web-tools-tsserver-lsp for more info.", cmd)
+			string.format("%s: Command not found. Check :help web-tsserver-lsp for more info.", cmd)
 		)
 		return false
 	end
@@ -33,7 +33,7 @@ local function validate()
 	local is_global = vim.fn.executable("tsc") == 1
 	if not is_global and get_project_tsserverjs() == nil then
 		utils.err.writeln(
-			"Typescript not installed in project, run `npm install -D typescript`. Check :help web-tools-tsserver-tsc for more info."
+			"Typescript not installed in project, run `npm install -D typescript`. Check :help web-tsserver-tsc for more info."
 		)
 		return false
 	end
@@ -117,7 +117,7 @@ function M.register_commands(bufnr)
 			vim.api.nvim_win_set_cursor(winid, { lnum + 1, col })
 		end
 
-		vim.api.nvim_notify("web-tools: Opening source file", vim.log.levels.WARN, {})
+		vim.api.nvim_notify("web: Opening source file", vim.log.levels.WARN, {})
 
 		local params = vim.lsp.util.make_position_params(winid)
 		client.request("workspace/executeCommand", {
@@ -129,7 +129,7 @@ end
 
 function M.setup(opts)
 	vim.api.nvim_create_autocmd("FileType", {
-		desc = "web-tools: start tsserver lsp server and client",
+		desc = "web: start tsserver lsp server and client",
 		group = event.group("tsserver"),
 		pattern = M.filetypes,
 		callback = function(ev)

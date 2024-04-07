@@ -1,4 +1,4 @@
-local prettier = require("web-tools.tools.prettier")
+local prettier = require("web.tools.prettier")
 local M = {}
 
 function M.register_common_user_commands(bufnr)

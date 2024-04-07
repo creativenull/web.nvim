@@ -1,4 +1,4 @@
-local utils = require("web-tools.utils")
+local utils = require("web.utils")
 local M = {}
 
 function M.get_executable()

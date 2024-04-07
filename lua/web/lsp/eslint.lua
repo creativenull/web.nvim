@@ -1,5 +1,5 @@
-local utils = require("web-tools.utils")
-local event = require("web-tools.event")
+local utils = require("web.utils")
+local event = require("web.event")
 local M = {}
 
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
@@ -18,7 +18,7 @@ local cmd = "vscode-eslint-language-server"
 
 local function validated()
 	if vim.fn.executable(cmd) == 0 then
-		utils.err.writeln(string.format("%s: Command not found. Check :help web-tools-eslint-lsp for more info.", cmd))
+		utils.err.writeln(string.format("%s: Command not found. Check :help web-eslint-lsp for more info.", cmd))
 		return false
 	end
 
@@ -93,7 +93,7 @@ function M.setup(opts)
 	end
 
 	vim.api.nvim_create_autocmd("FileType", {
-		desc = "web-tools: start eslint lsp server and client",
+		desc = "web: start eslint lsp server and client",
 		group = event.group("eslint"),
 		pattern = M.filetypes,
 		callback = function(ev)
