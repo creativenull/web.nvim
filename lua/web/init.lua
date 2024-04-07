@@ -6,9 +6,11 @@ local M = {}
 
 local default_setup_opts = {
 	on_attach = nil,
+  capabilities = nil,
 	format_on_save = false,
 
 	lsp = {
+    css = {},
 		tsserver = {
 			-- Inlay hints are opt-out feature in nvim >= v0.10
 			-- which means they will be enabled by default from v0.10 and onwards
@@ -54,6 +56,10 @@ function M.setup(setup_opts)
 
 	if setup_opts.lsp.eslint then
 		require("web.lsp.eslint").setup(setup_opts)
+	end
+
+	if setup_opts.lsp.css then
+		require("web.lsp.css").setup(setup_opts)
 	end
 
 	vim.api.nvim_create_autocmd("LspAttach", {
