@@ -2,6 +2,9 @@
 
 The all-in-one solution to setup a web development environment in neovim.
 
+> [!IMPORTANT]
+> Currently under active development, please don't use this as your daily driver yet.
+
 ## Features
 
 - No [`lspconfig` plugin][lspconfig-url] needed, we use builtin `vim.lsp.start()`
