@@ -6,7 +6,7 @@ function M.handle()
 		async = false,
 		timeout_ms = 5000,
 		filter = function(client)
-			return client.name == "tsserver" or client.name == "eslint-lsp"
+			return client.name ~= "tsserver" or client.name ~= "eslint-lsp"
 		end,
 	})
 
