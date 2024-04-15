@@ -56,7 +56,7 @@ function M.setup(opts)
 				M.capabilities = opts.capabilities
 			end
 
-			vim.lsp.start(config(opts.lsp.css))
+			vim.lsp.start(config(opts.lsp.html))
 			M.register_commands(ev.buf)
 		end,
 	})
