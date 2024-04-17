@@ -40,4 +40,8 @@ function M.err.writeln(msg)
 	vim.api.nvim_notify(string.format("[web.nvim] %s", msg), vim.log.levels.WARN, {})
 end
 
+function M.warn(msg)
+	vim.api.nvim_notify(string.format("web.nvim: %s", msg), vim.log.levels.WARN, {})
+end
+
 return M
