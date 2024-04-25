@@ -1,7 +1,6 @@
 local prettier = require("web.tools.prettier")
-local M = {}
 
-function M.handle()
+return function()
 	vim.lsp.buf.format({
 		async = false,
 		timeout_ms = 5000,
@@ -14,5 +13,3 @@ function M.handle()
 		prettier.format()
 	end
 end
-
-return M
