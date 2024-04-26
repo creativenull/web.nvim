@@ -1,7 +1,6 @@
-local prettier = require("web.tools.prettier")
 local M = {}
 
-function M.register_common_user_commands(bufnr)
+function M.register_lsp_cmds(bufnr)
 	vim.api.nvim_buf_create_user_command(bufnr, "WebQuickfixAction", function(cmd)
 		vim.lsp.buf.code_action({
 			context = { only = { "quickfix" }, triggerKind = 1 },

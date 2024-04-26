@@ -1,10 +1,16 @@
 local lsp_shared = require("web.lsp._shared")
-local event = require("web.event")
 local validator = require("web.validator")
 local M = {}
 
-local function register_user_commands()
-  require('web.run').setup()
+local function register_plugin_cmds()
+	require("web.run").setup()
+end
+
+local function create_common_on_attach(user_on_attach)
+	return function(bufnr, client)
+		lsp_shared.register_lsp_cmds(bufnr)
+		user_on_attach(bufnr, client)
+	end
 end
 
 local default_setup_opts = {
@@ -55,34 +61,17 @@ function M.setup(setup_opts)
 		setup_opts = default_setup_opts
 	end
 
-	if setup_opts.lsp.tsserver then
-		require("web.lsp.tsserver").setup(setup_opts)
-	end
+	setup_opts.on_attach = create_common_on_attach(setup_opts.on_attach)
 
-	if setup_opts.lsp.eslint then
-		require("web.lsp.eslint").setup(setup_opts)
-	end
+	-- Svelte Project
 
-	if setup_opts.lsp.css then
-		require("web.lsp.css").setup(setup_opts)
-	end
+	-- Astro Project
 
-	if setup_opts.lsp.html then
-		require("web.lsp.html").setup(setup_opts)
-	end
+	-- Vue Project
 
-	if setup_opts.lsp.astro then
-		require("web.lsp.astro").setup(setup_opts)
-	end
+	-- TS/JS Project
 
-	vim.api.nvim_create_autocmd("LspAttach", {
-		group = event.group("default"),
-		callback = function(ev)
-			lsp_shared.register_common_user_commands(ev.buf)
-		end,
-	})
-
-  register_user_commands()
+	register_plugin_cmds()
 end
 
 M.format = require("web.format")
