@@ -1,4 +1,4 @@
-local prettier = require("web.tools.prettier")
+local prettier = require("web.cli-tools.prettier")
 
 return function()
 	vim.lsp.buf.format({
