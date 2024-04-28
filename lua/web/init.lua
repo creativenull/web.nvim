@@ -7,9 +7,9 @@ local function register_plugin_cmds()
 end
 
 local function create_common_on_attach(user_on_attach)
-	return function(bufnr, client)
+	return function(client, bufnr)
+		user_on_attach(client, bufnr)
 		lsp_shared.register_lsp_cmds(bufnr)
-		user_on_attach(bufnr, client)
 	end
 end
 
