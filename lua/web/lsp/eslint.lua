@@ -4,6 +4,7 @@ local M = {}
 
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
 M.root_dirs = {
+  "eslint.config.js",
 	".eslintrc",
 	".eslintrc.cjs",
 	".eslintrc.js",
@@ -87,15 +88,21 @@ local function ensure_root_file()
 	return false
 end
 
-function M.setup(opts)
+function M.setup(opts, filetypes)
 	if not ensure_root_file() then
 		return
 	end
 
+  if filetypes ~= nil then
+    vim.list_extend(filetypes, M.filetypes)
+  else
+    filetypes = M.filetypes
+  end
+
 	vim.api.nvim_create_autocmd("FileType", {
 		desc = "web: start eslint lsp server and client",
 		group = event.group("eslint"),
-		pattern = M.filetypes,
+		pattern = filetypes,
 		callback = function(ev)
 			if not validated() then
 				return
