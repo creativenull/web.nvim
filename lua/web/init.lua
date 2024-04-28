@@ -1,3 +1,4 @@
+local utils = require("web.utils")
 local lsp_shared = require("web.lsp._shared")
 local validator = require("web.validator")
 local M = {}
@@ -48,6 +49,10 @@ local default_setup_opts = {
 	},
 }
 
+local function detected(root_files)
+	return utils.fs.find_nearest(root_files) ~= nil
+end
+
 function M.setup(setup_opts)
 	local valid, mod = pcall(validator.validate_requirements)
 	if not valid then
@@ -55,7 +60,7 @@ function M.setup(setup_opts)
 		return
 	end
 
-	if type(setup_opts) == "table" then
+	if setup_opts ~= nil and type(setup_opts) == "table" then
 		setup_opts = vim.tbl_extend("force", default_setup_opts, setup_opts)
 	else
 		setup_opts = default_setup_opts
@@ -63,15 +68,50 @@ function M.setup(setup_opts)
 
 	setup_opts.on_attach = create_common_on_attach(setup_opts.on_attach)
 
-	-- Svelte Project
-
-	-- Astro Project
-
-	-- Vue Project
-
-	-- TS/JS Project
-
+  -- Register any non-lsp dependent features
 	register_plugin_cmds()
+
+	-- Detect if a project or a monorepo
+
+	--[[
+  Astro Project
+    - Detect project
+    - Register autocmd to run lsp servers with options
+  --]]
+  if detected({ 'astro.config.js', 'astro.config.ts' }) then
+    require('web.lsp.astro').setup(setup_opts)
+    require('web.lsp.tsserver').setup(setup_opts)
+
+    return
+  end
+
+	--[[
+  Svelte Project
+    - Detect project
+    - Register autocmd to run lsp servers with options
+  --]]
+  if detected({ 'svelte.config.js', 'svelte.config.ts' }) then
+    require('web.lsp.svelte').setup(setup_opts)
+    require('web.lsp.tsserver').setup(setup_opts)
+
+    if detected({ '.eslintrc', '.eslintrc.js', '.eslintrc.ts', 'eslint.config.js', 'eslint.config.ts' }) then
+      require('web.lsp.eslint').setup(setup_opts, { 'svelte' })
+    end
+
+    return
+  end
+
+	--[[
+  Vue Project
+    - Detect project
+    - Register autocmd to run lsp servers with options
+  --]]
+
+	--[[
+  TS/JS Project
+    - Detect project
+    - Register autocmd to run lsp servers with options
+  --]]
 end
 
 M.format = require("web.format")
