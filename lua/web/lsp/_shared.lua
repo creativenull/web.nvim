@@ -31,7 +31,7 @@ function M.register_lsp_cmds(bufnr)
 		})
 	end, { range = true })
 
-	vim.api.nvim_buf_create_user_command(bufnr, "WebLspFormat", require("web.format").handle, {})
+	vim.api.nvim_buf_create_user_command(bufnr, "WebLspFormat", require("web.format"), {})
 end
 
 return M
