@@ -82,6 +82,10 @@ function M.setup(user_options)
     require("web.lsp.astro").setup(user_options)
     require("web.lsp.tsserver").setup(user_options)
 
+    if detected(require("web.lsp.eslint").root_dirs) then
+      require("web.lsp.eslint").setup(user_options, { filetyes = { "astro" } })
+    end
+
     return
   end
 
@@ -95,7 +99,7 @@ function M.setup(user_options)
     require("web.lsp.tsserver").setup(user_options)
 
     if detected(require("web.lsp.eslint").root_dirs) then
-      require("web.lsp.eslint").setup(user_options, { "svelte" })
+      require("web.lsp.eslint").setup(user_options, { filetyes = { "svelte" } })
     end
 
     return
@@ -124,7 +128,7 @@ function M.setup(user_options)
 
     -- Eslint support
     if detected(require("web.lsp.eslint").root_dirs) then
-      require("web.lsp.eslint").setup(user_options, { "vue" })
+      require("web.lsp.eslint").setup(user_options, { filetyes = { "vue" } })
     end
 
     return
