@@ -71,15 +71,12 @@ function M.setup(setup_opts)
   -- Register any non-lsp dependent features
 	register_plugin_cmds()
 
-	-- Detect if a project or a monorepo
-  local eslint_root_dirs = { '.eslintrc', '.eslintrc.js', '.eslintrc.ts', 'eslint.config.js', 'eslint.config.ts' }
-
 	--[[
   Astro Project
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
-  if detected({ 'astro.config.js', 'astro.config.ts' }) then
+  if detected(require('web.lsp.astro').root_dirs) then
     require('web.lsp.astro').setup(setup_opts)
     require('web.lsp.tsserver').setup(setup_opts)
 
@@ -91,11 +88,11 @@ function M.setup(setup_opts)
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
-  if detected({ 'svelte.config.js', 'svelte.config.ts' }) then
+  if detected(require('web.lsp.svelte').root_dirs) then
     require('web.lsp.svelte').setup(setup_opts)
     require('web.lsp.tsserver').setup(setup_opts)
 
-    if detected(eslint_root_dirs) then
+    if detected(require('web.lsp.eslint').root_dirs) then
       require('web.lsp.eslint').setup(setup_opts, { 'svelte' })
     end
 
@@ -134,8 +131,8 @@ function M.setup(setup_opts)
     })
 
     -- Eslint support
-    if detected(eslint_root_dirs) then
-      require('web.lsp.eslint').setup(setup_opts)
+    if detected(require('web.lsp.eslint').root_dirs) then
+      require('web.lsp.eslint').setup(setup_opts, { 'vue' })
     end
 
     return
@@ -146,10 +143,10 @@ function M.setup(setup_opts)
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
-  if detected({ 'tsconfig.json', 'jsconfig.json' }) then
+  if detected(require('web.lsp.tsserver').root_dirs) then
     require('web.lsp.tsserver').setup(setup_opts)
 
-    if detected(eslint_root_dirs) then
+    if detected(require('web.lsp.eslint').root_dirs) then
       require('web.lsp.eslint').setup(setup_opts)
     end
 
