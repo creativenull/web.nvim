@@ -23,6 +23,8 @@ local default_user_options = {
     css = {},
     html = {},
     astro = {},
+    volar = {},
+    svelte = {},
     tsserver = {
       -- Inlay hints are opt-out feature in nvim >= v0.10
       -- which means they will be enabled by default from v0.10 and onwards
