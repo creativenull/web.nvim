@@ -24,9 +24,7 @@ end
 
 local function validate()
 	if vim.fn.executable(cmd) == 0 then
-		utils.err.writeln(
-			string.format("%s: Command not found. Check :help web-tsserver-lsp for more info.", cmd)
-		)
+		utils.err.writeln(string.format("%s: Command not found. Check :help web-tsserver-lsp for more info.", cmd))
 		return false
 	end
 
@@ -41,21 +39,23 @@ local function validate()
 	return true
 end
 
-local function config(tsserver_opts)
+local function config(tsserver_opts, init_options)
 	local inlay_hints = false
 	if tsserver_opts.inlay_hints then
 		inlay_hints = true
 	end
+
+	init_options = vim.tbl_extend("force", {
+		hostInfo = utils.host_info(),
+		tsserver = { path = get_project_tsserverjs() },
+	}, init_options ~= nil and init_options or {})
 
 	return {
 		name = "tsserver",
 		cmd = { cmd, "--stdio" },
 		on_attach = M.on_attach,
 		root_dir = utils.fs.find_nearest(M.root_dirs),
-		init_options = {
-			hostInfo = utils.host_info(),
-			tsserver = { path = get_project_tsserverjs() },
-		},
+		init_options = init_options,
 		settings = {
 			javascript = {
 				inlayHints = {
@@ -127,18 +127,24 @@ function M.register_commands(bufnr)
 	end, {})
 end
 
-function M.setup(opts)
+function M.setup(opts, filetypes, init_options)
+  if filetypes ~= nil then
+    vim.list_extend(filetypes, M.filetypes)
+  else
+    filetypes = M.filetypes
+  end
+
 	vim.api.nvim_create_autocmd("FileType", {
 		desc = "web: start tsserver lsp server and client",
 		group = event.group("tsserver"),
-		pattern = M.filetypes,
+		pattern = filetypes,
 		callback = function(ev)
 			if not validate() then
 				return
 			end
 
 			M.on_attach = opts.on_attach
-			vim.lsp.start(config(opts.lsp.tsserver))
+			vim.lsp.start(config(opts.lsp.tsserver, init_options))
 			M.register_commands(ev.buf)
 		end,
 	})
