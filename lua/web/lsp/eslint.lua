@@ -2,6 +2,9 @@ local utils = require("web.utils")
 local event = require("web.event")
 local M = {}
 
+local _name = "eslint_ls"
+local _cmd = { "vscode-eslint-language-server", "--stdio" }
+
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
 M.root_dirs = {
   "eslint.config.js",
@@ -13,31 +16,28 @@ M.root_dirs = {
   ".eslintrc.yaml",
   ".eslintrc.yml",
 }
-M.on_attach = function(_, _) end
 
-local cmd = "vscode-eslint-language-server"
-
-local function validated()
-  if vim.fn.executable(cmd) == 0 then
-    utils.err.writeln(string.format("%s: Command not found. Check :help web-eslint-lsp for more info.", cmd))
+local function _validate()
+  if vim.fn.executable(_cmd[1]) == 0 then
+    utils.err.writeln(string.format("%s: Command not found. Check :help web-eslint-lsp for more info.", _cmd[1]))
     return false
   end
 
   return true
 end
 
-local function config(eslint_opts)
+local function _config(eslint_options, user_options)
   return {
-    name = "eslint-lsp",
-    cmd = { cmd, "--stdio" },
-    on_attach = M.on_attach,
+    name = _name,
+    cmd = _cmd,
+    on_attach = user_options.on_attach,
     root_dir = utils.fs.find_nearest(M.root_dirs),
     settings = {
       -- ref: https://github.com/neovim/nvim-lspconfig/blob/d0cdbae787cabff3574ec80b119bbd412333fb78/lua/lspconfig/server_configurations/eslint.lua#L65
       validate = "on",
       packageManager = nil,
       useESLintClass = false,
-      experimental = { useFlatConfig = eslint_opts.flat_config },
+      experimental = { useFlatConfig = eslint_options.flat_config },
       codeActionOnSave = {
         enable = false,
         mode = "all",
@@ -64,7 +64,7 @@ local function config(eslint_opts)
   }
 end
 
-function M.register_commands(bufnr)
+function M.set_user_commands(bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "WebEslintFixAll", function(usr_cmd)
     vim.lsp.buf.code_action({
       context = { only = { "source.fixAll.eslint" }, triggerKind = 1 },
@@ -77,40 +77,22 @@ function M.register_commands(bufnr)
   end, { range = true })
 end
 
-local function ensure_root_file()
-  for _, root_file in pairs(M.root_dirs) do
-    local filepath = string.format("%s/%s", vim.loop.cwd(), root_file)
-    if vim.fn.filereadable(filepath) == 1 then
-      return true
-    end
-  end
-
-  return false
-end
-
-function M.setup(opts, filetypes)
-  if not ensure_root_file() then
-    return
-  end
-
-  if filetypes ~= nil then
-    vim.list_extend(filetypes, M.filetypes)
-  else
-    filetypes = M.filetypes
+function M.setup(user_options, lsp_config)
+  if lsp_config.filetypes then
+    vim.list_extend(M.filetypes, lsp_config.filetypes)
   end
 
   vim.api.nvim_create_autocmd("FileType", {
-    desc = "web: start eslint lsp server and client",
-    group = event.group("eslint"),
-    pattern = filetypes,
+    desc = string.format("web.nvim: start %s", _name),
+    group = event.group(_name),
+    pattern = M.filetypes,
     callback = function(ev)
-      if not validated() then
+      if not _validate() then
         return
       end
 
-      M.on_attach = opts.on_attach
-      vim.lsp.start(config(opts.lsp.eslint))
-      M.register_commands(ev.buf)
+      vim.lsp.start(_config(user_options.lsp.eslint, user_options))
+      M.set_user_commands(ev.buf)
     end,
   })
 end

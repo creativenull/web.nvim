@@ -1,34 +1,22 @@
+local lsp_shared = require("web.lsp._shared")
 local event = require("web.event")
 local utils = require("web.utils")
 local M = {}
 
+local _name = "tsserver"
+local _cmd = { "typescript-language-server", "--stdio" }
+
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
 M.root_dirs = { "tsconfig.json", "jsconfig.json" }
 
-local cmd = "typescript-language-server"
-
-local function get_project_tsserverjs()
-  local project_path = utils.fs.find_nearest({ "node_modules" })
-  if project_path == nil then
-    return nil
-  end
-
-  local path = string.format("%s/node_modules/typescript/lib/tsserver.js", project_path)
-  if vim.fn.filereadable(path) == 0 then
-    return nil
-  end
-
-  return path
-end
-
-local function validate()
-  if vim.fn.executable(cmd) == 0 then
-    utils.err.writeln(string.format("%s: Command not found. Check :help web-tsserver-lsp for more info.", cmd))
+local function _validate()
+  if vim.fn.executable(_cmd[1]) == 0 then
+    utils.err.writeln(string.format("%s: Command not found. Check :help web-tsserver-lsp for more info.", _cmd[1]))
     return false
   end
 
   local is_global = vim.fn.executable("tsc") == 1
-  if not is_global and get_project_tsserverjs() == nil then
+  if not is_global and lsp_shared.get_project_tslib() == "" then
     utils.err.writeln(
       "Typescript not installed in project, run `npm install -D typescript`. Check :help web-tsserver-tsc for more info."
     )
@@ -38,7 +26,7 @@ local function validate()
   return true
 end
 
-local function config(tsserver_options, user_on_attach, user_init_options)
+local function _config(tsserver_options, user_options, lsp_config)
   local inlay_hints = false
   if tsserver_options.inlay_hints then
     inlay_hints = true
@@ -46,17 +34,17 @@ local function config(tsserver_options, user_on_attach, user_init_options)
 
   local init_options = {
     hostInfo = utils.host_info(),
-    tsserver = { path = get_project_tsserverjs() },
+    tsserver = { path = lsp_shared.get_project_tslib() },
   }
 
-  if user_init_options then
-    init_options = vim.tbl_extend("force", init_options, user_init_options)
+  if lsp_config.init_options then
+    init_options = vim.tbl_extend("force", init_options, lsp_config.init_options)
   end
 
   return {
-    name = "tsserver",
-    cmd = { cmd, "--stdio" },
-    on_attach = user_on_attach,
+    name = _name,
+    cmd = _cmd,
+    on_attach = user_options.on_attach,
     root_dir = utils.fs.find_nearest(M.root_dirs),
     init_options = init_options,
     settings = {
@@ -88,7 +76,7 @@ local function config(tsserver_options, user_on_attach, user_init_options)
   }
 end
 
-function M.register_commands(bufnr)
+function M.set_user_commands(bufnr)
   -- https://www.reddit.com/r/neovim/comments/lwz8l7/comment/gpkueno/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
   vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverOrganizeImports", function()
     vim.lsp.buf.execute_command({
@@ -136,16 +124,16 @@ function M.setup(user_options, lsp_config)
   end
 
   vim.api.nvim_create_autocmd("FileType", {
-    desc = "web: start tsserver lsp server and client",
-    group = event.group("tsserver"),
+    desc = string.format("web.nvim: start %s", _name),
+    group = event.group(_name),
     pattern = M.filetypes,
     callback = function(ev)
-      if not validate() then
+      if not _validate() then
         return
       end
 
-      vim.lsp.start(config(user_options.lsp.tsserver, user_options.on_attach, lsp_config.init_options))
-      M.register_commands(ev.buf)
+      vim.lsp.start(_config(user_options.lsp.tsserver, user_options, lsp_config))
+      M.set_user_commands(ev.buf)
     end,
   })
 end

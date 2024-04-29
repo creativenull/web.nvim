@@ -2,67 +2,44 @@ local event = require("web.event")
 local utils = require("web.utils")
 local M = {}
 
+local _name = "svelte_ls"
+local _cmd = { "svelteserver", "--stdio" }
+
 M.filetypes = { "svelte" }
 M.root_dirs = { "svelte.config.js", "svelte.config.ts", "svelte.config.cjs", "svelte.config.mjs" }
-M.on_attach = function(_, _) end
 
-local cmd = "svelteserver"
-
-local function get_project_tslib()
-  local project_path = utils.fs.find_nearest({ "node_modules" })
-  if project_path == nil then
-    return nil
-  end
-
-  local path = string.format("%s/node_modules/typescript/lib", project_path)
-  if vim.fn.isdirectory(path) == 0 then
-    return nil
-  end
-
-  return path
-end
-
-local function validate()
-  if vim.fn.executable(cmd) == 0 then
-    utils.err.writeln(string.format("%s: Command not found. Check :help web-svelte-lsp for more info.", cmd))
+local function _validate()
+  if vim.fn.executable(_cmd[1]) == 0 then
+    utils.err.writeln(string.format("%s: Command not found. Check :help web-svelte-lsp for more info.", _cmd[1]))
     return false
   end
-
-  -- local is_global = vim.fn.executable("tsc") == 1
-  -- if not is_global and get_project_tslib() == nil then
-  -- 	utils.err.writeln(
-  -- 		"Typescript not installed in project, run `npm install -D typescript`. Check :help web-svelte-tsc for more info."
-  -- 	)
-  -- 	return false
-  -- end
 
   return true
 end
 
-local function config(opts)
+local function _config(svelte_options, user_options)
   return {
-    name = "svelte-lsp",
-    cmd = { cmd, "--stdio" },
-    on_attach = M.on_attach,
+    name = _name,
+    cmd = _cmd,
+    on_attach = user_options.on_attach,
     root_dir = utils.fs.find_nearest(M.root_dirs),
   }
 end
 
-function M.register_commands(bufnr) end
+function M.set_user_commands(bufnr) end
 
-function M.setup(opts)
+function M.setup(user_options)
   vim.api.nvim_create_autocmd("FileType", {
-    desc = "web: start svelte lsp server and client",
-    group = event.group("svelte"),
+    desc = string.format("web.nvim: start %s", _name),
+    group = event.group(_name),
     pattern = M.filetypes,
     callback = function(ev)
-      if not validate() then
+      if not _validate() then
         return
       end
 
-      M.on_attach = opts.on_attach
-      vim.lsp.start(config(opts.lsp.svelte))
-      M.register_commands(ev.buf)
+      vim.lsp.start(_config(user_options.lsp.svelte, user_options))
+      M.set_user_commands(ev.buf)
     end,
   })
 end
