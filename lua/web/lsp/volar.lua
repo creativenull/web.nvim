@@ -129,6 +129,8 @@ function M.get_server_path()
       require("mason-registry").get_package("vue-language-server"):get_install_path()
     )
   else
+    -- TODO: Find a way to cache this so we don't have to keep calling the command
+    --       to check the global node_modules path.
     local result = vim.fn.systemlist("npm root --global")
     if vim.v.shell_error ~= 0 then
       utils.warn("nodejs not installed in your machine")
