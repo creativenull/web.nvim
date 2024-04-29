@@ -26,6 +26,69 @@ local function _validate()
   return true
 end
 
+local function create_definition(default_definition_fn)
+  local matches = { "components.d.ts", "auto-imports.d.ts" }
+
+  ---Check if the targetUri matches the files listed above
+  local function result_match(results)
+    for _, res in pairs(results) do
+      for _, fname in pairs(matches) do
+        if vim.endswith(res.targetUri, fname) then
+          return res
+        end
+      end
+    end
+
+    return nil
+  end
+
+  ---Open the file only if it's a vue/js/ts file
+  local function open_filename(targetUri_fname, matched_fname)
+    local target_fname = string.format("%s/%s", vim.fs.dirname(targetUri_fname), matched_fname)
+
+    if vim.endswith(target_fname, ".vue") then
+      vim.cmd(string.format("edit %s", target_fname))
+    else
+      -- Assume js/ts filename instead
+      local ext = ".js"
+      if vim.fn.filereadable(target_fname .. ext) == 0 then
+        ext = ".ts"
+      end
+
+      vim.cmd(string.format("edit %s%s", target_fname, ext))
+    end
+  end
+
+  return function(err, result, ctx, config)
+    vim.print("calling")
+    if err or result == nil or vim.tbl_isempty(result) then
+      return
+    end
+
+    local res = result_match(result)
+    if res == nil then
+      default_definition_fn(err, result, ctx, config)
+      return
+    end
+
+    -- Take the start line as the index and get only that
+    -- line as content_line for the match
+    local fname = vim.uri_to_fname(res.targetUri)
+    local sline = res.targetRange.start.line
+    local contents = vim.fn.readfile(fname)
+    local content_line = vim.trim(contents[sline + 1])
+    local matched_filename = vim.fn.matchlist(content_line, "typeof import(['\"]\\(\\.*/.*\\)['\"])")
+
+    if not vim.tbl_isempty(matched_filename) then
+      open_filename(fname, matched_filename[2])
+      return
+    end
+
+    -- Always default to builtin behavior, if anything fails
+    default_definition_fn(err, result, ctx, config)
+  end
+end
+
 local function _config(tsserver_options, user_options, lsp_config)
   local inlay_hints = false
   if tsserver_options.inlay_hints then
@@ -41,11 +104,14 @@ local function _config(tsserver_options, user_options, lsp_config)
     init_options = vim.tbl_extend("force", init_options, lsp_config.init_options)
   end
 
+  local default_definition_fn = vim.lsp.handlers["textDocument/definition"]
+
   return {
     name = _name,
     cmd = _cmd,
     on_attach = user_options.on_attach,
     root_dir = utils.fs.find_nearest(M.root_dirs),
+    handlers = { ["textDocument/definition"] = create_definition(default_definition_fn) },
     init_options = init_options,
     settings = {
       javascript = {
