@@ -7,23 +7,22 @@ local _cmd = { "language-server-binary", "--stdio" }
 
 M.filetypes = {}
 M.root_dirs = {}
-M.on_attach = function(_, _) end
 
 local function _validate() end
 
-local function _config(on_attach, capabilities, lspconfig)
+local function _config(options, user_options)
   return {
     name = _name,
     cmd = _cmd,
-    on_attach = on_attach,
-    capabilities = capabilities,
+    on_attach = user_options.on_attach,
+    capabilities = user_options.capabilities,
     root_dir = utils.fs.find_nearest(M.root_dirs),
   }
 end
 
 function M.set_user_commands(bufnr) end
 
-function M.setup(opts)
+function M.setup(user_options)
   vim.api.nvim_create_autocmd("FileType", {
     desc = string.format("web.nvim: start %s", _name),
     group = event.group(_name),
@@ -33,7 +32,8 @@ function M.setup(opts)
         return
       end
 
-      -- vim.lsp.start(_config(opts.on_attach, opts.capabilities, opts.lsp.<name>))
+      -- vim.lsp.start(_config(user_options.lsp.<>, user_options))
+      -- M.set_user_commands(ev.buf)
     end,
   })
 end
