@@ -18,7 +18,71 @@ local function _validate()
   return true
 end
 
+local function create_definition(default_definition_fn)
+  local matches = { "components.d.ts", "auto-imports.d.ts" }
+
+  ---Check if the targetUri matches the files listed above
+  local function result_match(results)
+    for _, res in pairs(results) do
+      for _, fname in pairs(matches) do
+        if vim.endswith(res.targetUri, fname) then
+          return res
+        end
+      end
+    end
+
+    return nil
+  end
+
+  ---Open the file only if it's a vue/js/ts file
+  local function open_filename(targetUri_fname, matched_fname)
+    local target_fname = string.format("%s/%s", vim.fs.dirname(targetUri_fname), matched_fname)
+
+    if vim.endswith(target_fname, ".vue") then
+      vim.cmd(string.format("edit %s", target_fname))
+    else
+      -- Assume js/ts filename instead
+      local ext = ".js"
+      if vim.fn.filereadable(target_fname .. ext) == 0 then
+        ext = ".ts"
+      end
+
+      vim.cmd(string.format("edit %s%s", target_fname, ext))
+    end
+  end
+
+  return function(err, results, ctx, config)
+    if err or results == nil or vim.tbl_isempty(results) then
+      return
+    end
+
+    local res = result_match(results)
+    if res == nil then
+      default_definition_fn(err, results, ctx, config)
+      return
+    end
+
+    -- Take the start line as the index and get only that
+    -- line as content_line for the match
+    local fname = vim.uri_to_fname(res.targetUri)
+    local sline = res.targetRange.start.line
+    local contents = vim.fn.readfile(fname)
+    local content_line = vim.trim(contents[sline + 1])
+    local matched_filename = vim.fn.matchlist(content_line, "typeof import(['\"]\\(\\.*/.*\\)['\"])")
+
+    if not vim.tbl_isempty(matched_filename) then
+      open_filename(fname, matched_filename[2])
+      return
+    end
+
+    -- Always default to builtin behavior, if anything fails
+    default_definition_fn(err, results, ctx, config)
+  end
+end
+
 local function _config(volar_options, user_options)
+  local default_definition_fn = vim.lsp.handlers["textDocument/definition"]
+
   return {
     name = _name,
     cmd = _cmd,
@@ -28,6 +92,9 @@ local function _config(volar_options, user_options)
     init_options = {
       typescript = { tsdk = lsp_shared.get_project_tslib() },
       vue = { hybridMode = true },
+    },
+    handlers = {
+      ["textDocument/definition"] = create_definition(default_definition_fn),
     },
   }
 end
