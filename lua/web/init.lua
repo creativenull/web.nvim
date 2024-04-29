@@ -108,33 +108,17 @@ function M.setup(user_options)
     require("web.lsp.volar").setup(user_options)
 
     -- Setup tsserver with vue support
-    local location = ""
-    local is_mason = pcall(require, "mason")
-
-    if is_mason then
-      location = string.format(
-        "%s/node_modules/@vue/language-server",
-        require("mason-registry").get_package("vue-language-server"):get_install_path()
-      )
-    else
-      local result = vim.fn.systemlist("npm ls -g --depth=0")
-      if result == "" then
-        utils.warn("nodejs not installed in your machine")
-
-        return
-      end
-
-      location = string.format("%s/node_modules/@vue/language-server", result[1])
-    end
-
-    require("web.lsp.tsserver").setup(user_options, {
-      filetypes = { "vue" },
-      init_options = {
-        plugins = {
-          { name = "@vue/typescript-plugin", location = location, languages = { "vue" } },
+    local location = require("web.lsp.volar").get_server_path()
+    if location ~= "" then
+      require("web.lsp.tsserver").setup(user_options, {
+        filetypes = { "vue" },
+        init_options = {
+          plugins = {
+            { name = "@vue/typescript-plugin", location = location, languages = { "vue" } },
+          },
         },
-      },
-    })
+      })
+    end
 
     -- Eslint support
     if detected(require("web.lsp.eslint").root_dirs) then

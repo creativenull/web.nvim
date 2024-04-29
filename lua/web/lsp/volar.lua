@@ -63,4 +63,27 @@ function M.setup(opts)
   })
 end
 
+---Get the language server path for ts plugin integration/hybrid mode.
+---Check within a mason registry, otherwise globally.
+---@return string
+function M.get_server_path()
+  local is_mason, _ = pcall(require, "mason")
+
+  if is_mason then
+    return string.format(
+      "%s/node_modules/@vue/language-server",
+      require("mason-registry").get_package("vue-language-server"):get_install_path()
+    )
+  else
+    local result = vim.fn.systemlist("npm ls -g --depth=0")
+    if result == "" then
+      utils.warn("nodejs not installed in your machine")
+
+      return ""
+    end
+
+    return string.format("%s/node_modules/@vue/language-server", result[1])
+  end
+end
+
 return M
