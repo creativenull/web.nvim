@@ -72,6 +72,7 @@ function M.setup(setup_opts)
 	register_plugin_cmds()
 
 	-- Detect if a project or a monorepo
+  local eslint_root_dirs = { '.eslintrc', '.eslintrc.js', '.eslintrc.ts', 'eslint.config.js', 'eslint.config.ts' }
 
 	--[[
   Astro Project
@@ -94,7 +95,7 @@ function M.setup(setup_opts)
     require('web.lsp.svelte').setup(setup_opts)
     require('web.lsp.tsserver').setup(setup_opts)
 
-    if detected({ '.eslintrc', '.eslintrc.js', '.eslintrc.ts', 'eslint.config.js', 'eslint.config.ts' }) then
+    if detected(eslint_root_dirs) then
       require('web.lsp.eslint').setup(setup_opts, { 'svelte' })
     end
 
@@ -106,12 +107,54 @@ function M.setup(setup_opts)
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
+  if detected(require('web.lsp.volar').root_dirs) then
+    require('web.lsp.volar').setup(setup_opts)
+
+    -- Setup tsserver with vue support
+    local location = ''
+    local is_mason = pcall(require, 'mason')
+
+    if is_mason then
+      location = string.format('%s/node_modules/@vue/language-server',  require('mason-registry').get_package('vue-language-server'):get_install_path())
+    else
+      local result = vim.fn.systemlist('npm ls -g --depth=0')
+      if result == '' then
+        utils.warn('nodejs not installed in your machine')
+
+        return
+      end
+
+      location = string.format('%s/node_modules/@vue/language-server', result[1])
+    end
+
+    require('web.lsp.tsserver').setup(setup_opts, { 'vue' }, {
+      plugins = {
+        { name = '@vue/typescript-plugin', location = location, languages = { 'vue' } },
+      },
+    })
+
+    -- Eslint support
+    if detected(eslint_root_dirs) then
+      require('web.lsp.eslint').setup(setup_opts)
+    end
+
+    return
+  end
 
 	--[[
   TS/JS Project
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
+  if detected({ 'tsconfig.json', 'jsconfig.json' }) then
+    require('web.lsp.tsserver').setup(setup_opts)
+
+    if detected(eslint_root_dirs) then
+      require('web.lsp.eslint').setup(setup_opts)
+    end
+
+    return
+  end
 end
 
 M.format = require("web.format")
