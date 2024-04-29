@@ -4,7 +4,6 @@ local M = {}
 
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
 M.root_dirs = { "tsconfig.json", "jsconfig.json" }
-M.on_attach = function(_, _) end
 
 local cmd = "typescript-language-server"
 
@@ -39,21 +38,25 @@ local function validate()
   return true
 end
 
-local function config(tsserver_opts, init_options)
+local function config(tsserver_options, user_on_attach, user_init_options)
   local inlay_hints = false
-  if tsserver_opts.inlay_hints then
+  if tsserver_options.inlay_hints then
     inlay_hints = true
   end
 
-  init_options = vim.tbl_extend("force", {
+  local init_options = {
     hostInfo = utils.host_info(),
     tsserver = { path = get_project_tsserverjs() },
-  }, init_options ~= nil and init_options or {})
+  }
+
+  if user_init_options then
+    init_options = vim.tbl_extend("force", init_options, user_init_options)
+  end
 
   return {
     name = "tsserver",
     cmd = { cmd, "--stdio" },
-    on_attach = M.on_attach,
+    on_attach = user_on_attach,
     root_dir = utils.fs.find_nearest(M.root_dirs),
     init_options = init_options,
     settings = {
@@ -127,24 +130,21 @@ function M.register_commands(bufnr)
   end, {})
 end
 
-function M.setup(opts, filetypes, init_options)
-  if filetypes ~= nil then
-    vim.list_extend(filetypes, M.filetypes)
-  else
-    filetypes = M.filetypes
+function M.setup(user_options, lsp_config)
+  if lsp_config.filetypes then
+    vim.list_extend(M.filetypes, lsp_config.filetypes)
   end
 
   vim.api.nvim_create_autocmd("FileType", {
     desc = "web: start tsserver lsp server and client",
     group = event.group("tsserver"),
-    pattern = filetypes,
+    pattern = M.filetypes,
     callback = function(ev)
       if not validate() then
         return
       end
 
-      M.on_attach = opts.on_attach
-      vim.lsp.start(config(opts.lsp.tsserver, init_options))
+      vim.lsp.start(config(user_options.lsp.tsserver, user_options.on_attach, lsp_config.init_options))
       M.register_commands(ev.buf)
     end,
   })

@@ -127,9 +127,12 @@ function M.setup(setup_opts)
       location = string.format("%s/node_modules/@vue/language-server", result[1])
     end
 
-    require("web.lsp.tsserver").setup(setup_opts, { "vue" }, {
-      plugins = {
-        { name = "@vue/typescript-plugin", location = location, languages = { "vue" } },
+    require("web.lsp.tsserver").setup(setup_opts, {
+      filetypes = { "vue" },
+      init_options = {
+        plugins = {
+          { name = "@vue/typescript-plugin", location = location, languages = { "vue" } },
+        },
       },
     })
 
