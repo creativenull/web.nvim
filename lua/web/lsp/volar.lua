@@ -133,7 +133,7 @@ function M.get_server_path()
     --       to check the global node_modules path.
     local result = vim.fn.systemlist("npm root --global")
     if vim.v.shell_error ~= 0 then
-      utils.warn("nodejs not installed in your machine")
+      utils.warn("nodejs must be installed to use the vue-language-server")
 
       return ""
     end
