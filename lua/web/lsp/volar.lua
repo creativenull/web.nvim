@@ -130,7 +130,7 @@ function M.get_server_path()
     )
   else
     local result = vim.fn.systemlist("npm root --global")
-    if result == "" then
+    if vim.v.shell_error ~= 0 then
       utils.warn("nodejs not installed in your machine")
 
       return ""
