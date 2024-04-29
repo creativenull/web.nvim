@@ -119,7 +119,7 @@ function M.set_user_commands(bufnr)
 end
 
 function M.setup(user_options, lsp_config)
-  if lsp_config.filetypes then
+  if lsp_config and lsp_config.filetypes then
     vim.list_extend(M.filetypes, lsp_config.filetypes)
   end
 
