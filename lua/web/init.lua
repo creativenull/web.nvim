@@ -14,7 +14,7 @@ local function create_common_on_attach(user_on_attach)
   end
 end
 
-local default_setup_opts = {
+local default_user_options = {
   on_attach = nil,
   capabilities = nil,
   format_on_save = false,
@@ -53,20 +53,20 @@ local function detected(root_files)
   return utils.fs.find_nearest(root_files) ~= nil
 end
 
-function M.setup(setup_opts)
+function M.setup(user_options)
   local valid, mod = pcall(validator.validate_requirements)
   if not valid then
     vim.api.nvim_err_writeln(mod)
     return
   end
 
-  if setup_opts ~= nil and type(setup_opts) == "table" then
-    setup_opts = vim.tbl_extend("force", default_setup_opts, setup_opts)
+  if user_options ~= nil and type(user_options) == "table" then
+    user_options = vim.tbl_extend("force", default_user_options, user_options)
   else
-    setup_opts = default_setup_opts
+    user_options = default_user_options
   end
 
-  setup_opts.on_attach = create_common_on_attach(setup_opts.on_attach)
+  user_options.on_attach = create_common_on_attach(user_options.on_attach)
 
   -- Register any non-lsp dependent features
   register_plugin_cmds()
@@ -77,8 +77,8 @@ function M.setup(setup_opts)
     - Register autocmd to run lsp servers with options
   --]]
   if detected(require("web.lsp.astro").root_dirs) then
-    require("web.lsp.astro").setup(setup_opts)
-    require("web.lsp.tsserver").setup(setup_opts)
+    require("web.lsp.astro").setup(user_options)
+    require("web.lsp.tsserver").setup(user_options)
 
     return
   end
@@ -89,11 +89,11 @@ function M.setup(setup_opts)
     - Register autocmd to run lsp servers with options
   --]]
   if detected(require("web.lsp.svelte").root_dirs) then
-    require("web.lsp.svelte").setup(setup_opts)
-    require("web.lsp.tsserver").setup(setup_opts)
+    require("web.lsp.svelte").setup(user_options)
+    require("web.lsp.tsserver").setup(user_options)
 
     if detected(require("web.lsp.eslint").root_dirs) then
-      require("web.lsp.eslint").setup(setup_opts, { "svelte" })
+      require("web.lsp.eslint").setup(user_options, { "svelte" })
     end
 
     return
@@ -105,7 +105,7 @@ function M.setup(setup_opts)
     - Register autocmd to run lsp servers with options
   --]]
   if detected(require("web.lsp.volar").root_dirs) then
-    require("web.lsp.volar").setup(setup_opts)
+    require("web.lsp.volar").setup(user_options)
 
     -- Setup tsserver with vue support
     local location = ""
@@ -127,7 +127,7 @@ function M.setup(setup_opts)
       location = string.format("%s/node_modules/@vue/language-server", result[1])
     end
 
-    require("web.lsp.tsserver").setup(setup_opts, {
+    require("web.lsp.tsserver").setup(user_options, {
       filetypes = { "vue" },
       init_options = {
         plugins = {
@@ -138,7 +138,7 @@ function M.setup(setup_opts)
 
     -- Eslint support
     if detected(require("web.lsp.eslint").root_dirs) then
-      require("web.lsp.eslint").setup(setup_opts, { "vue" })
+      require("web.lsp.eslint").setup(user_options, { "vue" })
     end
 
     return
@@ -150,10 +150,10 @@ function M.setup(setup_opts)
     - Register autocmd to run lsp servers with options
   --]]
   if detected(require("web.lsp.tsserver").root_dirs) then
-    require("web.lsp.tsserver").setup(setup_opts)
+    require("web.lsp.tsserver").setup(user_options)
 
     if detected(require("web.lsp.eslint").root_dirs) then
-      require("web.lsp.eslint").setup(setup_opts)
+      require("web.lsp.eslint").setup(user_options)
     end
 
     return
