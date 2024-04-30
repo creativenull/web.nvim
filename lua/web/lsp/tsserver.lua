@@ -100,7 +100,7 @@ local function _config(tsserver_options, user_options, lsp_config)
     tsserver = { path = lsp_shared.get_project_tslib() },
   }
 
-  if lsp_config.init_options then
+  if lsp_config and lsp_config.init_options then
     init_options = vim.tbl_extend("force", init_options, lsp_config.init_options)
   end
 
