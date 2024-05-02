@@ -6,7 +6,7 @@ local _name = "tailwindcss_ls"
 local _cmd = { "tailwindcss-language-server", "--stdio" }
 
 M.filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact", "vue", "astro", "svelte" }
-M.root_dirs = { "tailwind.config.js", "tailwind.config.ts" }
+M.root_dirs = { "tailwind.config.js", "tailwind.config.cjs", "tailwind.config.mjs", "tailwind.config.ts" }
 
 local function _validate()
   if vim.fn.executable(_cmd[1]) == 0 then
