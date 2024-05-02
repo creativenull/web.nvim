@@ -7,7 +7,7 @@ local _name = "volar"
 local _cmd = { "vue-language-server", "--stdio" }
 
 M.filetypes = { "vue" }
-M.root_dirs = { "vue.config.js", "vue.config.ts", "nuxt.config.js", "nuxt.config.ts" }
+M.root_dirs = { "nuxt.config.js", "nuxt.config.ts", "vite.config.js", "vite.config.ts" }
 
 local function _validate()
   if vim.fn.executable(_cmd[1]) == 0 then
