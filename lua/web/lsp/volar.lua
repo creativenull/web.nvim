@@ -54,9 +54,13 @@ end
 ---Check within a mason registry, otherwise globally.
 ---@return string
 function M.get_server_path()
-  local is_mason, _ = pcall(require, "mason")
+  local function ensure_mason_package()
+    return require("mason-registry").is_installed("vue-language-server")
+  end
 
-  if is_mason then
+  local is_mason, installed = pcall(ensure_mason_package)
+
+  if is_mason and installed then
     return string.format(
       "%s/node_modules/@vue/language-server",
       require("mason-registry").get_package("vue-language-server"):get_install_path()
