@@ -82,9 +82,9 @@ function M.setup(user_options)
     require("web.lsp.astro").setup(user_options)
     require("web.lsp.tsserver").setup(user_options)
 
-    if detected(require("web.lsp.tailwindcss").root_dirs) then
-      require("web.lsp.tailwindcss").setup(user_options)
-    end
+    -- if detected(require("web.lsp.tailwindcss").root_dirs) then
+    --   require("web.lsp.tailwindcss").setup(user_options)
+    -- end
 
     if detected(require("web.lsp.eslint").root_dirs) then
       require("web.lsp.eslint").setup(user_options, { filetyes = { "astro" } })
@@ -102,9 +102,9 @@ function M.setup(user_options)
     require("web.lsp.svelte").setup(user_options)
     require("web.lsp.tsserver").setup(user_options)
 
-    if detected(require("web.lsp.tailwindcss").root_dirs) then
-      require("web.lsp.tailwindcss").setup(user_options)
-    end
+    -- if detected(require("web.lsp.tailwindcss").root_dirs) then
+    --   require("web.lsp.tailwindcss").setup(user_options)
+    -- end
 
     if detected(require("web.lsp.eslint").root_dirs) then
       require("web.lsp.eslint").setup(user_options, { filetyes = { "svelte" } })
@@ -121,9 +121,9 @@ function M.setup(user_options)
   if detected(require("web.lsp.volar").root_dirs) then
     require("web.lsp.volar").setup(user_options)
 
-    if detected(require("web.lsp.tailwindcss").root_dirs) then
-      require("web.lsp.tailwindcss").setup(user_options)
-    end
+    -- if detected(require("web.lsp.tailwindcss").root_dirs) then
+    --   require("web.lsp.tailwindcss").setup(user_options)
+    -- end
 
     -- Setup tsserver with vue support
     local location = require("web.lsp.volar").get_server_path()
@@ -154,9 +154,9 @@ function M.setup(user_options)
   if detected(require("web.lsp.tsserver").root_dirs) then
     require("web.lsp.tsserver").setup(user_options)
 
-    if detected(require("web.lsp.tailwindcss").root_dirs) then
-      require("web.lsp.tailwindcss").setup(user_options)
-    end
+    -- if detected(require("web.lsp.tailwindcss").root_dirs) then
+    --   require("web.lsp.tailwindcss").setup(user_options)
+    -- end
 
     if detected(require("web.lsp.eslint").root_dirs) then
       require("web.lsp.eslint").setup(user_options)
