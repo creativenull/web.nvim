@@ -60,7 +60,6 @@ local function create_definition(default_definition_fn)
   end
 
   return function(err, result, ctx, config)
-    vim.print("calling")
     if err or result == nil or vim.tbl_isempty(result) then
       return
     end
