@@ -6,7 +6,7 @@ local M = {}
 local _name = "astro_ls"
 local _cmd = { "astro-ls", "--stdio" }
 
-M.filetypes = { "astro" }
+M.filetypes = { "astro", "markdown" }
 M.root_dirs = { "astro.config.js", "astro.config.ts", "astro.config.cjs", "astro.config.mjs" }
 
 local function _validate()
