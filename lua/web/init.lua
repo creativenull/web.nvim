@@ -19,6 +19,10 @@ local function create_common_on_attach(user_on_attach, user_options)
     if client.name == "volar" and user_options.lsp.volar.inlay_hints then
       vim.lsp.inlay_hint.enable()
     end
+
+    if client.name == "astro_ls" and user_options.lsp.astro.inlay_hints then
+      vim.lsp.inlay_hint.enable()
+    end
   end
 end
 
@@ -30,7 +34,9 @@ local default_user_options = {
   lsp = {
     css = {},
     html = {},
-    astro = {},
+    astro = {
+      inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
+    },
     volar = {
       inlay_hints = vim.fn.has("nvim-0.10") == 1,
     },
