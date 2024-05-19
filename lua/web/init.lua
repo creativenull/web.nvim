@@ -7,12 +7,14 @@ local function register_plugin_cmds()
   require("web.run").setup()
 end
 
-local function create_common_on_attach(user_on_attach)
+local function create_common_on_attach(user_on_attach, user_options)
   return function(client, bufnr)
     user_on_attach(client, bufnr)
     lsp_shared.register_lsp_cmds(bufnr)
 
-    vim.lsp.inlay_hint.enable()
+    if user_options.lsp.tsserver.inlay_hints then
+      vim.lsp.inlay_hint.enable()
+    end
   end
 end
 
@@ -70,7 +72,7 @@ function M.setup(user_options)
     user_options = default_user_options
   end
 
-  user_options.on_attach = create_common_on_attach(user_options.on_attach)
+  user_options.on_attach = create_common_on_attach(user_options.on_attach, user_options)
 
   -- Register any non-lsp dependent features
   register_plugin_cmds()
