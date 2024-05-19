@@ -8,7 +8,7 @@ The all-in-one solution to setup a web development environment in neovim.
 ## Features
 
 - No [`lspconfig` plugin][lspconfig-url] needed, we use builtin `vim.lsp.start()`
-- Automatically setup lsp servers based on project (tsserver, eslint, css, html, WIP: volar, svelte, astrojs)
+- Automatically setup lsp servers based on project (tsserver, eslint, css, html, volar, svelte, astrojs, tailwindcss)
 - Automatically setup formatters (prettier, WIP: biomejs)
 - Format code - `:WebLspFormat`, and option to format on save
 - Run code actions on save feature
