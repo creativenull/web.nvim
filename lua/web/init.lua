@@ -12,7 +12,7 @@ local function create_common_on_attach(user_on_attach, user_options)
     user_on_attach(client, bufnr)
     lsp_shared.register_lsp_cmds(bufnr)
 
-    if user_options.lsp.tsserver.inlay_hints then
+    if user_options.lsp.tsserver.inlay_hints ~= "" then
       vim.lsp.inlay_hint.enable()
     end
   end
