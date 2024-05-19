@@ -18,11 +18,37 @@ local function _validate()
 end
 
 local function _config(svelte_options, user_options)
+  local inlay_hints = svelte_options.inlay_hints
+
   return {
     name = _name,
     cmd = _cmd,
     on_attach = user_options.on_attach,
     root_dir = utils.fs.find_nearest(M.root_dirs),
+    settings = {
+      typescript = {
+        inlayHints = {
+          parameterNames = {
+            enabled = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
+          },
+          parameterTypes = {
+            enabled = inlay_hints == "minimal" or inlay_hints == "all",
+          },
+          variableTypes = {
+            enabled = inlay_hints == "all",
+          },
+          propertyDeclarationTypes = {
+            enabled = inlay_hints == "minimal" or inlay_hints == "all",
+          },
+          functionLikeReturnTypes = {
+            enabled = inlay_hints == "all",
+          },
+          enumMemberValues = {
+            enabled = inlay_hints == "minimal" or inlay_hints == "all",
+          },
+        },
+      },
+    },
   }
 end
 

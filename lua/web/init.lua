@@ -23,6 +23,10 @@ local function create_common_on_attach(user_on_attach, user_options)
     if client.name == "astro_ls" and user_options.lsp.astro.inlay_hints then
       vim.lsp.inlay_hint.enable()
     end
+
+    if client.name == "svelte_ls" and user_options.lsp.svelte.inlay_hints ~= "" then
+      vim.lsp.inlay_hint.enable()
+    end
   end
 end
 
@@ -40,7 +44,9 @@ local default_user_options = {
     volar = {
       inlay_hints = vim.fn.has("nvim-0.10") == 1,
     },
-    svelte = {},
+    svelte = {
+      inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
+    },
     tsserver = {
       -- Inlay hints are opt-out feature in nvim >= v0.10
       -- which means they will be enabled by default from v0.10 and onwards
