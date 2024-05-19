@@ -12,7 +12,11 @@ local function create_common_on_attach(user_on_attach, user_options)
     user_on_attach(client, bufnr)
     lsp_shared.register_lsp_cmds(bufnr)
 
-    if user_options.lsp.tsserver.inlay_hints ~= "" then
+    if client.name == "tsserver" and user_options.lsp.tsserver.inlay_hints ~= "" then
+      vim.lsp.inlay_hint.enable()
+    end
+
+    if client.name == "volar" and user_options.lsp.volar.inlay_hints then
       vim.lsp.inlay_hint.enable()
     end
   end
@@ -27,7 +31,9 @@ local default_user_options = {
     css = {},
     html = {},
     astro = {},
-    volar = {},
+    volar = {
+      inlay_hints = vim.fn.has("nvim-0.10") == 1,
+    },
     svelte = {},
     tsserver = {
       -- Inlay hints are opt-out feature in nvim >= v0.10
