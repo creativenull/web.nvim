@@ -154,11 +154,6 @@ function M.setup(user_options)
   if detected(require("web.lsp.tsserver").root_dirs) then
     require("web.lsp.tsserver").setup(user_options)
 
-    -- Enable inlay hints on nvim side
-    if user_options.lsp.tsserver.inlay_hints then
-      vim.lsp.inlay_hints.enable()
-    end
-
     if detected(require("web.lsp.tailwindcss").root_dirs) then
       require("web.lsp.tailwindcss").setup(user_options)
     end
@@ -168,6 +163,11 @@ function M.setup(user_options)
     end
 
     return
+  end
+
+  -- Enable inlay hints on nvim side
+  if user_options.lsp.tsserver.inlay_hints then
+    vim.lsp.inlay_hints.enable()
   end
 end
 
