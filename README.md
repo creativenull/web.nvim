@@ -15,6 +15,7 @@ The all-in-one solution to setup a web development environment in neovim.
 - Refactor code - `:WebRefactorAction`
 - Quickfix code - `:WebQuickfixAction`
 - Source action - `:WebSourceAction`
+- Automatically enable inlay hints if using nvim 0.10 and above
 - Tsserver specific
   - Organize imports - `:WebTsserverOrganizeImports`
   - Go to source definition, helpful when you do not want d.ts but direct to source file (for example, go to .js file instead of d.ts definition) - `:WebTsserverGoToSourceDefinition`
