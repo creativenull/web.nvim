@@ -89,10 +89,7 @@ local function create_definition(default_definition_fn)
 end
 
 local function _config(tsserver_options, user_options, lsp_config)
-  local inlay_hints = false
-  if tsserver_options.inlay_hints then
-    inlay_hints = true
-  end
+  local inlay_hints = tsserver_options.inlay_hints
 
   local init_options = {
     hostInfo = utils.host_info(),
@@ -115,26 +112,26 @@ local function _config(tsserver_options, user_options, lsp_config)
     settings = {
       javascript = {
         inlayHints = {
-          includeInlayEnumMemberValueHints = inlay_hints,
-          -- includeInlayFunctionLikeReturnTypeHints = inlay_hints,
-          includeInlayFunctionParameterTypeHints = inlay_hints,
-          includeInlayParameterNameHints = inlay_hints and "all" or "none",
-          includeInlayParameterNameHintsWhenArgumentMatchesName = inlay_hints,
-          includeInlayPropertyDeclarationTypeHints = inlay_hints,
-          -- includeInlayVariableTypeHints = inlay_hints,
-          -- includeInlayVariableTypeHintsWhenTypeMatchesName = inlay_hints,
+          includeInlayEnumMemberValueHints = inlay_hints == "minimal" or inlay_hints == "all",
+          includeInlayFunctionLikeReturnTypeHints = inlay_hints == "all",
+          includeInlayFunctionParameterTypeHints = inlay_hints == "minimal" or inlay_hints == "all",
+          includeInlayParameterNameHints = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
+          includeInlayParameterNameHintsWhenArgumentMatchesName = inlay_hints == "minimal" or inlay_hints == "all",
+          includeInlayPropertyDeclarationTypeHints = inlay_hints == "minimal" or inlay_hints == "all",
+          includeInlayVariableTypeHints = inlay_hints == "all",
+          includeInlayVariableTypeHintsWhenTypeMatchesName = inlay_hints == "all",
         },
       },
       typescript = {
         inlayHints = {
-          includeInlayEnumMemberValueHints = inlay_hints,
-          -- includeInlayFunctionLikeReturnTypeHints = inlay_hints,
-          includeInlayFunctionParameterTypeHints = inlay_hints,
-          includeInlayParameterNameHints = inlay_hints and "all" or "none",
-          includeInlayParameterNameHintsWhenArgumentMatchesName = inlay_hints,
-          includeInlayPropertyDeclarationTypeHints = inlay_hints,
-          -- includeInlayVariableTypeHints = inlay_hints,
-          -- includeInlayVariableTypeHintsWhenTypeMatchesName = inlay_hints,
+          includeInlayEnumMemberValueHints = inlay_hints == "minimal" or inlay_hints == "all",
+          includeInlayFunctionLikeReturnTypeHints = inlay_hints == "all" or inlay_hints == "all",
+          includeInlayFunctionParameterTypeHints = inlay_hints == "minimal" or inlay_hints == "all",
+          includeInlayParameterNameHints = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
+          includeInlayParameterNameHintsWhenArgumentMatchesName = inlay_hints == "minimal" or inlay_hints == "all",
+          includeInlayPropertyDeclarationTypeHints = inlay_hints == "minimal" or inlay_hints == "all",
+          includeInlayVariableTypeHints = inlay_hints == "all",
+          includeInlayVariableTypeHintsWhenTypeMatchesName = inlay_hints == "all",
         },
       },
     },

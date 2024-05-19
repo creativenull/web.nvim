@@ -32,7 +32,7 @@ local default_user_options = {
     tsserver = {
       -- Inlay hints are opt-out feature in nvim >= v0.10
       -- which means they will be enabled by default from v0.10 and onwards
-      inlay_hints = vim.fn.has("nvim-0.10") == 1,
+      inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
 
       -- TODO: wait for nvim PR to be stable/merged (https://github.com/neovim/neovim/pull/22598)
       code_actions_on_save = {
