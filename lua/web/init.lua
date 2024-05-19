@@ -167,7 +167,7 @@ function M.setup(user_options)
 
   -- Enable inlay hints on nvim side
   if user_options.lsp.tsserver.inlay_hints then
-    vim.lsp.inlay_hints.enable()
+    vim.lsp.inlay_hint.enable()
   end
 end
 
