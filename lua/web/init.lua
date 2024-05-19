@@ -11,6 +11,8 @@ local function create_common_on_attach(user_on_attach)
   return function(client, bufnr)
     user_on_attach(client, bufnr)
     lsp_shared.register_lsp_cmds(bufnr)
+
+    vim.lsp.inlay_hint.enable()
   end
 end
 
@@ -163,11 +165,6 @@ function M.setup(user_options)
     end
 
     return
-  end
-
-  -- Enable inlay hints on nvim side
-  if user_options.lsp.tsserver.inlay_hints then
-    vim.lsp.inlay_hint.enable()
   end
 end
 
