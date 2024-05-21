@@ -13,19 +13,19 @@ local function create_common_on_attach(user_on_attach, user_options)
     lsp_shared.register_lsp_cmds(bufnr)
 
     if client.name == "tsserver" and user_options.lsp.tsserver.inlay_hints ~= "" then
-      vim.lsp.inlay_hint.enable()
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 
     if client.name == "volar" and user_options.lsp.volar.inlay_hints then
-      vim.lsp.inlay_hint.enable()
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 
     if client.name == "astro_ls" and user_options.lsp.astro.inlay_hints then
-      vim.lsp.inlay_hint.enable()
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 
     if client.name == "svelte_ls" and user_options.lsp.svelte.inlay_hints ~= "" then
-      vim.lsp.inlay_hint.enable()
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
   end
 end
