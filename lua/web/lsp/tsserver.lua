@@ -7,7 +7,7 @@ local _name = "tsserver"
 local _cmd = { "typescript-language-server", "--stdio" }
 
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
-M.root_dirs = { "tsconfig.json", "jsconfig.json" }
+M.root_dirs = { "tsconfig.json", "jsconfig.json", "package.json" }
 
 local function _validate()
   if vim.fn.executable(_cmd[1]) == 0 then
