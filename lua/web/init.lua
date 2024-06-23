@@ -85,8 +85,7 @@ function M.setup(user_options)
   end
 
   if user_options ~= nil and type(user_options) == "table" then
-    user_options = vim.tbl_extend("force", default_user_options, user_options)
-    vim.print(user_options)
+    user_options = vim.tbl_deep_extend("force", default_user_options, user_options)
   else
     user_options = default_user_options
   end
