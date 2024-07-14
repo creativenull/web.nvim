@@ -52,8 +52,14 @@ function M.setup(user_options)
         return
       end
 
-      vim.lsp.start(_config(user_options.lsp.html, user_options))
-      M.set_user_commands(ev.buf)
+
+      -- TODO: find a way to avoid this situation, if possible
+      if vim.endswith(ev.file, ".html") then
+        -- Only start the html server on html files and not just
+        -- on files that get inherited by the html syntax
+        vim.lsp.start(_config(user_options.lsp.html, user_options))
+        M.set_user_commands(ev.buf)
+      end
     end,
   })
 end
