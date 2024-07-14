@@ -44,4 +44,8 @@ function M.warn(msg)
   vim.api.nvim_notify(string.format("web.nvim: %s", msg), vim.log.levels.WARN, {})
 end
 
+function M.report_error(msg)
+  table.insert(_G._web.health.errors, msg)
+end
+
 return M
