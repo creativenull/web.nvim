@@ -96,12 +96,20 @@ function M.setup(user_options)
   register_plugin_cmds()
 
   --[[
-  JSON Server for any project
+  Generic project, or no project
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
   if detected(require("web.lsp.json").root_dirs) then
     require("web.lsp.json").setup(user_options)
+  end
+
+  if detected(require("web.lsp.html").root_dirs) then
+    require("web.lsp.html").setup(user_options)
+  end
+
+  if detected(require("web.lsp.css").root_dirs) then
+    require("web.lsp.css").setup(user_options)
   end
 
   --[[

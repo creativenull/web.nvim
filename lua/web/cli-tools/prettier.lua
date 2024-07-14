@@ -44,7 +44,7 @@ function M.format()
   local tool = M.get_executable()
 
   if tool == "" then
-    utils.err.writeln("Prettier not installed. Install with `npm i -D prettier`.")
+    utils.report_error("Prettier not installed. Install with `npm i -D prettier`.")
     return
   end
 

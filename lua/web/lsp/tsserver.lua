@@ -11,13 +11,13 @@ M.root_dirs = { "tsconfig.json", "jsconfig.json", "package.json" }
 
 local function _validate()
   if vim.fn.executable(_cmd[1]) == 0 then
-    utils.err.writeln(string.format("%s: Command not found. Check :help web-tsserver-lsp for more info.", _cmd[1]))
+    utils.report_error(string.format("%s: Command not found. Check :help web-tsserver-lsp for more info.", _cmd[1]))
     return false
   end
 
   local is_global = vim.fn.executable("tsc") == 1
   if not is_global and lsp_shared.get_project_tslib() == "" then
-    utils.err.writeln(
+    utils.report_error(
       "Typescript not installed in project, run `npm install -D typescript`. Check :help web-tsserver-tsc for more info."
     )
     return false

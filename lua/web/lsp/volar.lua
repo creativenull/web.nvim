@@ -11,7 +11,7 @@ M.root_dirs = { "nuxt.config.js", "nuxt.config.ts", "vite.config.js", "vite.conf
 
 local function _validate()
   if vim.fn.executable(_cmd[1]) == 0 then
-    utils.err.writeln(string.format("%s: Command not found. Check :help web-vue-lsp for more info.", _cmd[1]))
+    utils.report_error(string.format("%s: Command not found. Check :help web-vue-lsp for more info.", _cmd[1]))
     return false
   end
 

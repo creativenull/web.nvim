@@ -10,7 +10,7 @@ M.root_dirs = { "svelte.config.js", "svelte.config.ts", "svelte.config.cjs", "sv
 
 local function _validate()
   if vim.fn.executable(_cmd[1]) == 0 then
-    utils.err.writeln(string.format("%s: Command not found. Check :help web-svelte-lsp for more info.", _cmd[1]))
+    utils.report_error(string.format("%s: Command not found. Check :help web-svelte-lsp for more info.", _cmd[1]))
     return false
   end
 
