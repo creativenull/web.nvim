@@ -2,11 +2,11 @@ local event = require("web.event")
 local utils = require("web.utils")
 local M = {}
 
-local _name = "language-server-name"
-local _cmd = { "language-server-binary", "--stdio" }
+local _name = "json_ls"
+local _cmd = { "vscode-json-language-server", "--stdio" }
 
-M.filetypes = {}
-M.root_dirs = {}
+M.filetypes = { "json" }
+M.root_dirs = { "package.json" }
 
 local function _validate()
   if vim.fn.executable(_cmd[1]) == 0 then

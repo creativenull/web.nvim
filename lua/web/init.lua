@@ -186,6 +186,17 @@ function M.setup(user_options)
 
     return
   end
+
+  --[[
+  JSON Server for any project
+    - Detect project
+    - Register autocmd to run lsp servers with options
+  --]]
+  if detected(require("web.lsp.json").root_dirs) then
+    require("web.lsp.json").setup(user_options)
+
+    return
+  end
 end
 
 M.format = require("web.format")
