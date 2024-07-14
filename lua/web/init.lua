@@ -96,6 +96,15 @@ function M.setup(user_options)
   register_plugin_cmds()
 
   --[[
+  JSON Server for any project
+    - Detect project
+    - Register autocmd to run lsp servers with options
+  --]]
+  if detected(require("web.lsp.json").root_dirs) then
+    require("web.lsp.json").setup(user_options)
+  end
+
+  --[[
   Astro Project
     - Detect project
     - Register autocmd to run lsp servers with options
@@ -183,17 +192,6 @@ function M.setup(user_options)
     if detected(require("web.lsp.eslint").root_dirs) then
       require("web.lsp.eslint").setup(user_options)
     end
-
-    return
-  end
-
-  --[[
-  JSON Server for any project
-    - Detect project
-    - Register autocmd to run lsp servers with options
-  --]]
-  if detected(require("web.lsp.json").root_dirs) then
-    require("web.lsp.json").setup(user_options)
 
     return
   end
