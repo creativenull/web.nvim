@@ -1,6 +1,6 @@
 local M = {}
 
-M.check = function()
+function M.check()
   if _G._web == nil then
     _G._web = { health = { errors = {} } }
   end
@@ -9,6 +9,8 @@ M.check = function()
     for _, msg in pairs(_G._web.health.errors) do
       vim.health.error(msg)
     end
+  else
+    vim.health.ok("no errors found!")
   end
 end
 
