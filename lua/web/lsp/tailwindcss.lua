@@ -34,7 +34,7 @@ function M.setup(user_options)
     user_options.lsp.tailwindcss.additional_filetypes ~= nil
     and type(user_options.lsp.tailwindcss.additional_filetypes) == "table"
   then
-    vim.list_extend(M.filetypes, user_options.lsp.tailwindcss.filetypes)
+    vim.list_extend(M.filetypes, user_options.lsp.tailwindcss.additional_filetypes)
   end
 
   vim.api.nvim_create_autocmd("FileType", {
