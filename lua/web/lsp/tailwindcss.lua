@@ -30,7 +30,10 @@ end
 function M.set_user_commands(bufnr) end
 
 function M.setup(user_options)
-  if user_options.lsp.tailwindcss.additional_filetypes then
+  if
+    user_options.lsp.tailwindcss.additional_filetypes ~= nil
+    and type(user_options.lsp.tailwindcss.additional_filetypes) == "table"
+  then
     vim.list_extend(M.filetypes, user_options.lsp.tailwindcss.filetypes)
   end
 
