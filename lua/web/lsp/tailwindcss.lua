@@ -30,6 +30,10 @@ end
 function M.set_user_commands(bufnr) end
 
 function M.setup(user_options)
+  if user_options.lsp.tailwindcss.additional_filetypes then
+    vim.list_extend(M.filetypes, user_options.lsp.tailwindcss.filetypes)
+  end
+
   vim.api.nvim_create_autocmd("FileType", {
     desc = string.format("web.nvim: start %s", _name),
     group = event.group(_name),

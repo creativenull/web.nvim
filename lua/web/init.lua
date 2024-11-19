@@ -70,6 +70,10 @@ local default_user_options = {
         "source.fixAll.eslint",
       },
     },
+
+    tailwindcss = {
+      additional_filetypes = nil,
+    },
   },
 }
 
