@@ -58,6 +58,59 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 require('web').setup({
   on_attach = on_attach,
   capabilities = capabilities,
+
+  -- Format the buffer using formatting tools prettier and biomejs (WIP), if available
+  format_on_save = false,
+
+  -- LSP specific settings for your needs
+  lsp = {
+    css = {}, -- no settings needed for now
+    html = {}, -- no settings needed for now
+    -- Astro LSP settings
+    astro = {
+      inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
+    },
+    -- Volar LSP settings
+    volar = {
+      -- Enable inlay hints if using nvim 0.10 and above
+      inlay_hints = vim.fn.has("nvim-0.10") == 1,
+    },
+    -- Svelte LSP settings
+    svelte = {
+      -- Enable inlay hints if using nvim 0.10 and above
+      inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
+    },
+    -- Tsserver LSP settings
+    tsserver = {
+      -- Enable inlay hints if using nvim 0.10 and above
+      inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
+
+      -- Code actions to run on save, not implemented yet
+      -- Waiting for this PR to be stable/merged (https://github.com/neovim/neovim/pull/22598)
+      code_actions_on_save = {
+        "source.organizeImports.ts",
+        "source.fixAll.ts",
+        "source.removeUnused.ts",
+        "source.addMissingImports.ts",
+        "source.removeUnusedImports.ts",
+        "source.sortImports.ts",
+      },
+    },
+
+    -- Eslint LSP settings
+    eslint = {
+      workspace = true,
+      flat_config = false,
+      code_actions_on_save = {
+        "source.fixAll.eslint",
+      },
+    },
+
+    -- Tailwindcss LSP settings
+    tailwindcss = {
+      additional_filetypes = nil,
+    },
+  },
 })
 ```
 
