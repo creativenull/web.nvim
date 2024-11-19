@@ -3,7 +3,7 @@
 The all-in-one solution to setup a web development environment in neovim.
 
 > [!IMPORTANT]
-> Currently under active development, please don't use this as your daily driver yet.
+> Still under development but feel free to use and give feedback on anything missing.
 
 ## Features
 
