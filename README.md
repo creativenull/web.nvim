@@ -64,25 +64,28 @@ require('web').setup({
 
   -- LSP specific settings for your needs
   lsp = {
-    css = {}, -- no settings needed for now
-    html = {}, -- no settings needed for now
-    -- Astro LSP settings
+    css = {}, -- No settings needed for now
+
+    html = {}, -- No settings needed for now
+
+    -- Astrojs LSP settings
     astro = {
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
-    -- Volar LSP settings
+
+    -- Volarjs LSP settings
     volar = {
-      -- Enable inlay hints if using nvim 0.10 and above
       inlay_hints = vim.fn.has("nvim-0.10") == 1,
     },
-    -- Svelte LSP settings
+
+    -- Sveltejs LSP settings
     svelte = {
-      -- Enable inlay hints if using nvim 0.10 and above
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
-    -- Tsserver LSP settings
+
+    -- TS Server LSP settings
     tsserver = {
-      -- Enable inlay hints if using nvim 0.10 and above
+      -- Enable the minimal option of inlay hints if runnning on nvim 0.10 or above
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
 
       -- Code actions to run on save, not implemented yet
@@ -106,7 +109,7 @@ require('web').setup({
       },
     },
 
-    -- Tailwindcss LSP settings
+    -- TailwindCSS LSP settings
     tailwindcss = {
       additional_filetypes = nil,
     },
