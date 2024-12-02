@@ -8,8 +8,11 @@ local _cmd = { "vscode-eslint-language-server", "--stdio" }
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
 M.root_dirs = {
   "eslint.config.js",
+  "eslint.config.mjs",
+  "eslint.config.ts",
   ".eslintrc",
   ".eslintrc.cjs",
+  ".eslintrc.mjs",
   ".eslintrc.js",
   ".eslintrc.ts",
   ".eslintrc.json",
