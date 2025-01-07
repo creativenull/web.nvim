@@ -46,6 +46,26 @@ Plug 'creativenull/web.nvim'
 
 ## Setup
 
+You can setup the plugin using the following the minimal code example.
+
+```lua
+-- You can use that exact same on_attach you have already defined for lspconfig
+-- or create one like below
+local on_attach = function(client, bufnr)
+  -- ...
+end
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+require('web').setup({
+  on_attach = on_attach,
+  capabilities = capabilities,
+})
+```
+
+Following is the code example with all the settings, to show all the options and
+their default values.
+
 ```lua
 -- You can use that exact same on_attach you have already defined for lspconfig
 -- or create one like below
@@ -62,29 +82,36 @@ require('web').setup({
   -- Format the buffer using formatting tools prettier and biomejs (WIP), if available
   format_on_save = false,
 
-  -- LSP specific settings for your needs
+  -- LSP Server settings
   lsp = {
-    css = {}, -- No settings needed for now
+    json = { disabled = false },
 
-    html = {}, -- No settings needed for now
+    css = { disabled = false },
 
-    -- Astrojs LSP settings
+    html = { disabled = false },
+
+    -- Astro LSP settings
     astro = {
+      disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
 
-    -- Volarjs LSP settings
+    -- Volar.js (Vue) LSP settings
     volar = {
+      disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1,
     },
 
-    -- Sveltejs LSP settings
+    -- Svelte LSP settings
     svelte = {
+      disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
 
-    -- TS Server LSP settings
+    -- JS/TS Server LSP settings
     tsserver = {
+      disabled = false,
+
       -- Enable the minimal option of inlay hints if runnning on nvim 0.10 or above
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
 
@@ -102,6 +129,7 @@ require('web').setup({
 
     -- Eslint LSP settings
     eslint = {
+      disabled = false,
       workspace = true,
       flat_config = false,
       code_actions_on_save = {
@@ -109,8 +137,9 @@ require('web').setup({
       },
     },
 
-    -- TailwindCSS LSP settings
+    -- Tailwind CSS LSP settings
     tailwindcss = {
+      disabled = false,
       additional_filetypes = nil,
     },
   },
