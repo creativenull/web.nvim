@@ -36,6 +36,7 @@ local default_user_options = {
   format_on_save = false,
 
   lsp = {
+    json = { disabled = false },
     css = { disabled = false },
     html = { disabled = false },
     astro = {
