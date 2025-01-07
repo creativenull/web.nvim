@@ -36,18 +36,23 @@ local default_user_options = {
   format_on_save = false,
 
   lsp = {
-    css = {},
-    html = {},
+    css = { disabled = false },
+    html = { disabled = false },
     astro = {
+      disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
     volar = {
+      disabled = true,
       inlay_hints = vim.fn.has("nvim-0.10") == 1,
     },
     svelte = {
+      disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
     tsserver = {
+      disabled = false,
+
       -- Inlay hints are opt-out feature in nvim >= v0.10
       -- which means they will be enabled by default from v0.10 and onwards
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
@@ -64,6 +69,7 @@ local default_user_options = {
     },
 
     eslint = {
+      disabled = false,
       workspace = true,
       flat_config = false,
       code_actions_on_save = {
@@ -72,6 +78,7 @@ local default_user_options = {
     },
 
     tailwindcss = {
+      disabled = false,
       additional_filetypes = nil,
     },
   },
@@ -104,15 +111,15 @@ function M.setup(user_options)
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
-  if detected(require("web.lsp.json").root_dirs) then
+  if not user_options.lsp.json.disabled and detected(require("web.lsp.json").root_dirs) then
     require("web.lsp.json").setup(user_options)
   end
 
-  if detected(require("web.lsp.html").root_dirs) then
+  if not user_options.lsp.html.disabled and detected(require("web.lsp.html").root_dirs) then
     require("web.lsp.html").setup(user_options)
   end
 
-  if detected(require("web.lsp.css").root_dirs) then
+  if not user_options.lsp.css.disabled and detected(require("web.lsp.css").root_dirs) then
     require("web.lsp.css").setup(user_options)
   end
 
@@ -121,15 +128,15 @@ function M.setup(user_options)
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
-  if detected(require("web.lsp.astro").root_dirs) then
+  if not user_options.lsp.astro.disabled and detected(require("web.lsp.astro").root_dirs) then
     require("web.lsp.astro").setup(user_options)
     require("web.lsp.tsserver").setup(user_options)
 
-    if detected(require("web.lsp.tailwindcss").root_dirs) then
+    if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
       require("web.lsp.tailwindcss").setup(user_options)
     end
 
-    if detected(require("web.lsp.eslint").root_dirs) then
+    if not user_options.lsp.eslint.disabled and detected(require("web.lsp.eslint").root_dirs) then
       require("web.lsp.eslint").setup(user_options, { filetyes = { "astro" } })
     end
 
@@ -141,15 +148,15 @@ function M.setup(user_options)
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
-  if detected(require("web.lsp.svelte").root_dirs) then
+  if not user_options.lsp.svelte.disabled and detected(require("web.lsp.svelte").root_dirs) then
     require("web.lsp.svelte").setup(user_options)
     require("web.lsp.tsserver").setup(user_options)
 
-    if detected(require("web.lsp.tailwindcss").root_dirs) then
+    if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
       require("web.lsp.tailwindcss").setup(user_options)
     end
 
-    if detected(require("web.lsp.eslint").root_dirs) then
+    if not user_options.lsp.eslint.disabled and detected(require("web.lsp.eslint").root_dirs) then
       require("web.lsp.eslint").setup(user_options, { filetyes = { "svelte" } })
     end
 
@@ -161,10 +168,10 @@ function M.setup(user_options)
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
-  if detected(require("web.lsp.volar").root_dirs) then
+  if not user_options.lsp.volar.disabled and detected(require("web.lsp.volar").root_dirs) then
     require("web.lsp.volar").setup(user_options)
 
-    if detected(require("web.lsp.tailwindcss").root_dirs) then
+    if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
       require("web.lsp.tailwindcss").setup(user_options)
     end
 
@@ -182,7 +189,7 @@ function M.setup(user_options)
     end
 
     -- Eslint support
-    if detected(require("web.lsp.eslint").root_dirs) then
+    if not user_options.lsp.eslint.disabled and detected(require("web.lsp.eslint").root_dirs) then
       require("web.lsp.eslint").setup(user_options, { filetyes = { "vue" } })
     end
 
@@ -194,14 +201,14 @@ function M.setup(user_options)
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
-  if detected(require("web.lsp.tsserver").root_dirs) then
+  if not user_options.lsp.tsserver.disabled and detected(require("web.lsp.tsserver").root_dirs) then
     require("web.lsp.tsserver").setup(user_options)
 
-    if detected(require("web.lsp.tailwindcss").root_dirs) then
+    if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
       require("web.lsp.tailwindcss").setup(user_options)
     end
 
-    if detected(require("web.lsp.eslint").root_dirs) then
+    if not user_options.lsp.eslint.disabled and detected(require("web.lsp.eslint").root_dirs) then
       require("web.lsp.eslint").setup(user_options)
     end
 
