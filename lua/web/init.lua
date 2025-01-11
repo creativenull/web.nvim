@@ -44,7 +44,7 @@ local default_user_options = {
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
     volar = {
-      disabled = true,
+      disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1,
     },
     svelte = {
