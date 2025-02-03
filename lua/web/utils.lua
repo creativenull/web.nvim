@@ -45,6 +45,10 @@ function M.warn(msg)
 end
 
 function M.report_error(msg)
+  if _G._web == nil then
+    _G._web = { health = { errors = {} } }
+  end
+
   table.insert(_G._web.health.errors, msg)
 end
 
