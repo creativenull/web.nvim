@@ -9,6 +9,13 @@ local _cmd = { "vue-language-server", "--stdio" }
 M.filetypes = { "vue" }
 M.root_dirs = { "nuxt.config.js", "nuxt.config.ts", "vite.config.js", "vite.config.ts" }
 
+---Check the major version of vue-language-server
+---@return number
+function M.version()
+  local output = vim.fn.systemlist({ "vue-language-server", "--version" })
+  return tonumber(string.match(output[1], "%d+"), 10)
+end
+
 local function _validate()
   if vim.fn.executable(_cmd[1]) == 0 then
     utils.report_error(string.format("%s: Command not found. Check :help web-vue-lsp for more info.", _cmd[1]))
@@ -19,6 +26,17 @@ local function _validate()
 end
 
 local function _config(vue_options, user_options)
+  if M.version() >= 3 then
+    -- Adjust options for vue-language-server v3
+    return {
+      name = _name,
+      cmd = _cmd,
+      on_attach = user_options.on_attach,
+      capabilities = user_options.capabilities,
+      root_dir = utils.fs.find_nearest(M.root_dirs),
+    }
+  end
+
   return {
     name = _name,
     cmd = _cmd,

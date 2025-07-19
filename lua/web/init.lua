@@ -69,6 +69,14 @@ local default_user_options = {
       },
     },
 
+    vtsls = {
+      disabled = false,
+
+      -- Inlay hints are opt-out feature in nvim >= v0.10
+      -- which means they will be enabled by default from v0.10 and onwards
+      inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
+    },
+
     eslint = {
       disabled = false,
       workspace = true,
@@ -170,15 +178,35 @@ function M.setup(user_options)
     - Register autocmd to run lsp servers with options
   --]]
   if not user_options.lsp.vue.disabled and detected(require("web.lsp.vue").root_dirs) then
-    require("web.lsp.vue").setup(user_options)
+    local vuels = require("web.lsp.vue")
+    vuels.setup(user_options)
 
     if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
       require("web.lsp.tailwindcss").setup(user_options)
     end
 
-    -- Setup tsserver with vue support
     local location = require("web.lsp.vue").get_server_path()
-    if location ~= "" then
+    if vuels.version() >= 3 and location ~= "" then
+      -- vtsls setup for vue-language-server v3
+      require("web.lsp.vtsls").setup(user_options, {
+        filetypes = { "vue" },
+        settings = {
+          vtsls = {
+            tsserver = {
+              globalPlugins = {
+                {
+                  name = "@vue/typescript-plugin",
+                  location = location,
+                  languages = { "vue" },
+                  configNamespace = "typescript",
+                },
+              },
+            },
+          },
+        },
+      })
+    elseif vuels.version() < 3 and location ~= "" then
+      -- tsserver setup for vue-language-server v2
       require("web.lsp.tsserver").setup(user_options, {
         filetypes = { "vue" },
         init_options = {
