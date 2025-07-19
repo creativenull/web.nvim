@@ -3,7 +3,7 @@ local event = require("web.event")
 local utils = require("web.utils")
 local M = {}
 
-local _name = "volar"
+local _name = "vue_ls"
 local _cmd = { "vue-language-server", "--stdio" }
 
 M.filetypes = { "vue" }
@@ -18,7 +18,7 @@ local function _validate()
   return true
 end
 
-local function _config(volar_options, user_options)
+local function _config(vue_options, user_options)
   return {
     name = _name,
     cmd = _cmd,
@@ -44,7 +44,7 @@ function M.setup(user_options)
         return
       end
 
-      vim.lsp.start(_config(user_options.lsp.volar, user_options))
+      vim.lsp.start(_config(user_options.lsp.vue, user_options))
       M.set_user_commands(ev.buf)
     end,
   })

@@ -16,7 +16,7 @@ local function create_common_on_attach(user_on_attach, user_options)
       vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 
-    if client.name == "volar" and user_options.lsp.volar.inlay_hints then
+    if client.name == "vue_ls" and user_options.lsp.vue.inlay_hints then
       vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 
@@ -43,7 +43,7 @@ local default_user_options = {
       disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
-    volar = {
+    vue = {
       disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1,
     },
@@ -169,15 +169,15 @@ function M.setup(user_options)
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
-  if not user_options.lsp.volar.disabled and detected(require("web.lsp.volar").root_dirs) then
-    require("web.lsp.volar").setup(user_options)
+  if not user_options.lsp.vue.disabled and detected(require("web.lsp.vue").root_dirs) then
+    require("web.lsp.vue").setup(user_options)
 
     if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
       require("web.lsp.tailwindcss").setup(user_options)
     end
 
     -- Setup tsserver with vue support
-    local location = require("web.lsp.volar").get_server_path()
+    local location = require("web.lsp.vue").get_server_path()
     if location ~= "" then
       require("web.lsp.tsserver").setup(user_options, {
         filetypes = { "vue" },
