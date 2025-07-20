@@ -25,42 +25,41 @@ local function _validate()
   return true
 end
 
-local function _config(vue_options, user_options)
-  if M.version() >= 3 then
-    -- Adjust options for vue-language-server v3
-    return {
-      name = _name,
-      cmd = _cmd,
-      on_attach = user_options.on_attach,
-      capabilities = user_options.capabilities,
-      root_dir = utils.fs.find_nearest(M.root_dirs),
-      on_init = function(client)
-        -- Shamelessly copied from: https://github.com/vuejs/language-tools/wiki/Neovim/1d846ecf8f2018ffc7ce1c0a62645a09d5d3c156
-        client.handlers["tsserver/request"] = function(_, result, context)
-          local clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "vtsls" })
+local function _vuels3_config(user_options)
+  return {
+    name = _name,
+    cmd = _cmd,
+    on_attach = user_options.on_attach,
+    capabilities = user_options.capabilities,
+    root_dir = utils.fs.find_nearest(M.root_dirs),
+    on_init = function(client)
+      -- Shamelessly copied from: https://github.com/vuejs/language-tools/wiki/Neovim/1d846ecf8f2018ffc7ce1c0a62645a09d5d3c156
+      client.handlers["tsserver/request"] = function(_, result, context)
+        local clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "vtsls" })
 
-          if #clients == 0 then
-            utils.warn("vtsls: Command not found. Install using Mason or `npm install -g @vtsls/language-server`.")
+        if #clients == 0 then
+          utils.warn("vtsls: Command not found. Install using Mason or `npm install -g @vtsls/language-server`.")
 
-            return
-          end
-
-          local ts_client = clients[1]
-          local param = unpack(result)
-          local id, command, payload = unpack(param)
-
-          ts_client:exec_cmd(
-            { command = "typescript.tsserverRequest", arguments = { command, payload } },
-            { bufnr = context.bufnr },
-            function(_, r)
-              client:notify("tsserver/response", { { id, r.body } })
-            end
-          )
+          return
         end
-      end,
-    }
-  end
 
+        local ts_client = clients[1]
+        local param = unpack(result)
+        local id, command, payload = unpack(param)
+
+        ts_client:exec_cmd(
+          { command = "typescript.tsserverRequest", arguments = { command, payload } },
+          { bufnr = context.bufnr },
+          function(_, r)
+            client:notify("tsserver/response", { { id, r.body } })
+          end
+        )
+      end
+    end,
+  }
+end
+
+local function _vuels2_config(user_options)
   return {
     name = _name,
     cmd = _cmd,
@@ -72,6 +71,15 @@ local function _config(vue_options, user_options)
       vue = { hybridMode = true },
     },
   }
+end
+
+local function _config(vue_options, user_options)
+  if M.version() >= 3 then
+    -- Adjust options for vue-language-server v3
+    return _vuels3_config(user_options)
+  end
+
+  return _vuels2_config(user_options)
 end
 
 function M.set_user_commands(bufnr) end
