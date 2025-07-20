@@ -40,7 +40,7 @@ local function _config(vue_options, user_options)
           local clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "vtsls" })
 
           if #clients == 0 then
-            utils.warn("Could not find `vtsls` lsp client, `vue_ls` would not work without it.")
+            utils.warn("vtsls: Command not found. Install using Mason or `npm install -g @vtsls/language-server`.")
 
             return
           end
