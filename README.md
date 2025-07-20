@@ -8,7 +8,8 @@ The all-in-one solution to setup a web development environment in neovim.
 ## Features
 
 - No [`lspconfig` plugin][lspconfig-url] needed, using builtin `vim.lsp.start()`
-- Automatically setup lsp servers based on project (tsserver, eslint, css, html, vue, svelte, astrojs, tailwindcss, WIP: angularls)
+- Automatically setup lsp servers based on project (tsserver, eslint, css, html, vue, svelte, astrojs, tailwindcss, WIP:
+  angularls)
 - Automatically setup formatters (prettier, WIP: biomejs)
 - Format code - `:WebLspFormat`, additional set the `format_on_save` option to format on save
 - Run code actions on save feature (WIP)
@@ -18,7 +19,8 @@ The all-in-one solution to setup a web development environment in neovim.
 - Inlay hints (if using nvim 0.10 and above, opt-out feature)
 - Tsserver specific
   - Organize imports - `:WebTsserverOrganizeImports`
-  - Go to source definition, helpful when you do not want d.ts but direct to source file (for example, go to .js file instead of d.ts definition) - `:WebTsserverGoToSourceDefinition`
+  - Go to source definition, helpful when you do not want d.ts but direct to source file (for example, go to .js file
+    instead of d.ts definition) - `:WebTsserverGoToSourceDefinition`
 - Eslint specific
   - Fix eslint errors - `:WebEslintFixAll`
 - Run `package.json` scripts via `:WebRun`
@@ -31,7 +33,6 @@ The all-in-one solution to setup a web development environment in neovim.
 ```vimscript
 Plug 'creativenull/web.nvim'
 ```
-
 
 ### lazy.nvim
 
@@ -66,8 +67,7 @@ require('web').setup({
 })
 ```
 
-Following is the code example with all the settings, to show all the options and
-their default values.
+Following is the code example with all the settings, to show all the options and their default values.
 
 ```lua
 -- You can use that exact same on_attach you have already defined for lspconfig
@@ -151,15 +151,13 @@ require('web').setup({
 
 ### Capabilities
 
-If using nvim-cmp or similar that provide you with custom capabilities, then you
-can use that. For example:
+If using nvim-cmp or similar that provide you with custom capabilities, then you can use that. For example:
 
 ```lua
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 ```
 
-Or if you have a custom completion plugin that doesn't come with that support
-then use the following:
+Or if you have a custom completion plugin that doesn't come with that support then use the following:
 
 ```lua
 local capabilities = vim.lsp.protocol.make_client_capabilities()
