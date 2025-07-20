@@ -87,12 +87,12 @@ local function _config(tsserver_options, user_options, lsp_config)
       inlayHints = {
         parameterNames = {
           enabled = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
-          suppressWhenArgumentMatchesName = inlay_hints == "minimal" or inlay_hints == "all",
+          suppressWhenArgumentMatchesName = inlay_hints == "minimal",
         },
         parameterTypes = { enabled = inlay_hints == "all" },
         variableTypes = {
           enabled = inlay_hints == "all",
-          suppressWhenTypeMatchesName = inlay_hints == "all",
+          suppressWhenTypeMatchesName = inlay_hints == "minimal",
         },
         propertyDeclarationTypes = { enabled = inlay_hints == "all" },
         functionLikeReturnTypes = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
@@ -102,12 +102,12 @@ local function _config(tsserver_options, user_options, lsp_config)
       inlayHints = {
         parameterNames = {
           enabled = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
-          suppressWhenArgumentMatchesName = inlay_hints == "minimal" or inlay_hints == "all",
+          suppressWhenArgumentMatchesName = inlay_hints == "minimal",
         },
         parameterTypes = { enabled = inlay_hints == "all" },
         variableTypes = {
           enabled = inlay_hints == "all",
-          suppressWhenTypeMatchesName = inlay_hints == "all",
+          suppressWhenTypeMatchesName = inlay_hints == "minimal",
         },
         propertyDeclarationTypes = { enabled = inlay_hints == "all" },
         functionLikeReturnTypes = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
