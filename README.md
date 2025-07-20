@@ -177,22 +177,28 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 }
 ```
 
-## Recommendation notes
+## Notes
 
-### Vue
+### Vue language server (difference between v2 and v3)
 
-#### Additional dependency needed (vtsls)
+#### v3
 
 Since the release of vue-language-server v3, the language server now requires vtsls server to be installed as an
 additional dependency. Ensure that you have it installed via Mason.nvim or with `npm install -g @vtsls/language-server`.
 
-#### Stay with v2
+#### v2
 
 If you decide to stick with v2 of the vue language server, then you don't have to do anything as this is not being
 phased out. Plan is to phase it out if v4 of the language server is released.
 
 However, you are having issues like `Invalid 'col': out of range` then it's most likely a inlay hints issue and I
-suggest to set `inlay_hints = false`.
+suggest to set `inlay_hints = false` for now.
+
+```lua
+vue = {
+  inlay_hints = false,
+}
+```
 
 [lspconfig-url]: https://github.com/neovim/nvim-lspconfig
 [mason-url]: https://github.com/williamboman/mason.nvim
