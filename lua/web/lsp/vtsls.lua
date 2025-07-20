@@ -86,32 +86,32 @@ local function _config(tsserver_options, user_options, lsp_config)
     javascript = {
       inlayHints = {
         parameterNames = {
-          enabled = inlay_hints == "minimal" and "literals" or (inlay_hints == "all" and "all" or "none"),
+          enabled = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
           suppressWhenArgumentMatchesName = inlay_hints == "minimal" or inlay_hints == "all",
         },
-        parameterTypes = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
+        parameterTypes = { enabled = inlay_hints == "all" },
         variableTypes = {
-          enabled = inlay_hints == "minimal" or inlay_hints == "all",
-          suppressWhenTypeMatchesName = inlay_hints == "minimal" or inlay_hints == "all",
+          enabled = inlay_hints == "all",
+          suppressWhenTypeMatchesName = inlay_hints == "all",
         },
-        propertyDeclarationTypes = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
+        propertyDeclarationTypes = { enabled = inlay_hints == "all" },
         functionLikeReturnTypes = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
       },
     },
     typescript = {
       inlayHints = {
         parameterNames = {
-          enabled = inlay_hints == "minimal" and "literals" or (inlay_hints == "all" and "all" or "none"),
+          enabled = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
           suppressWhenArgumentMatchesName = inlay_hints == "minimal" or inlay_hints == "all",
         },
-        parameterTypes = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
+        parameterTypes = { enabled = inlay_hints == "all" },
         variableTypes = {
-          enabled = inlay_hints == "minimal" or inlay_hints == "all",
-          suppressWhenTypeMatchesName = inlay_hints == "minimal" or inlay_hints == "all",
+          enabled = inlay_hints == "all",
+          suppressWhenTypeMatchesName = inlay_hints == "all",
         },
-        propertyDeclarationTypes = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
+        propertyDeclarationTypes = { enabled = inlay_hints == "all" },
         functionLikeReturnTypes = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
-        enumMemberValues = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
+        enumMemberValues = { enabled = inlay_hints == "all" },
       },
     },
   }
