@@ -132,7 +132,52 @@ local function _config(tsserver_options, user_options, lsp_config)
   }
 end
 
-function M.set_user_commands(bufnr) end
+function M.set_user_commands(bufnr)
+  vim.api.nvim_buf_create_user_command(bufnr, "WebOrganizeImports", function()
+    local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "vtsls" })
+    if vim.tbl_isempty(clients) then
+      return
+    end
+
+    local client = clients[1]
+
+    client:exec_cmd({
+      command = "typescript.organizeImports",
+      arguments = { vim.api.nvim_buf_get_name(0) },
+    })
+  end)
+
+  vim.api.nvim_buf_create_user_command(bufnr, "WebGoToSourceDefinition", function()
+    local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "vtsls" })
+    if vim.tbl_isempty(clients) then
+      return
+    end
+
+    local client = clients[1]
+    local winid = vim.api.nvim_get_current_win()
+    local params = vim.lsp.util.make_position_params(winid)
+    local handler = function(_, result)
+      if result == nil or vim.tbl_isempty(result) then
+        return
+      end
+
+      local response = result[1]
+      local fname = vim.uri_to_fname(response.uri)
+      local lnum = response.range.start.line
+      local col = response.range.start.character
+
+      vim.cmd(string.format("edit %s", fname))
+      vim.api.nvim_win_set_cursor(winid, { lnum + 1, col })
+    end
+
+    vim.api.nvim_notify("web: Opening source file", vim.log.levels.WARN, {})
+
+    client:exec_cmd({
+      command = "typescript.goToSourceDefinition",
+      arguments = { params.textDocument.uri, params.position },
+    }, { bufnr = bufnr }, handler)
+  end)
+end
 
 function M.setup(user_options, lsp_config)
   if lsp_config and lsp_config.filetypes then
