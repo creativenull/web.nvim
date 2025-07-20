@@ -145,7 +145,7 @@ function M.set_user_commands(bufnr)
       command = "typescript.organizeImports",
       arguments = { vim.api.nvim_buf_get_name(0) },
     })
-  end)
+  end, {})
 
   vim.api.nvim_buf_create_user_command(bufnr, "WebGoToSourceDefinition", function()
     local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "vtsls" })
@@ -176,7 +176,7 @@ function M.set_user_commands(bufnr)
       command = "typescript.goToSourceDefinition",
       arguments = { params.textDocument.uri, params.position },
     }, { bufnr = bufnr }, handler)
-  end)
+  end, {})
 end
 
 function M.setup(user_options, lsp_config)
