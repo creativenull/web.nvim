@@ -16,6 +16,10 @@ local function create_common_on_attach(user_on_attach, user_options)
       vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 
+    if client.name == "vtsls" and user_options.lsp.vtsls.inlay_hints ~= "" then
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    end
+
     if client.name == "vue_ls" and user_options.lsp.vue.inlay_hints then
       vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
