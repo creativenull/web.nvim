@@ -25,13 +25,26 @@ local function _validate()
   return true
 end
 
-local function _vuels3_config(user_options)
+local function _vuels3_config(vue_options, user_options)
+  local inlay_hints = vue_options.inlay_hints
+
   return {
     name = _name,
     cmd = _cmd,
     on_attach = user_options.on_attach,
     capabilities = user_options.capabilities,
     root_dir = utils.fs.find_nearest(M.root_dirs),
+    settings = {
+      vue = {
+        inlayHints = {
+          destructuredProps = inlay_hints,
+          missingProps = inlay_hints,
+          inlineHandlerLeading = inlay_hints,
+          optionsWrapper = inlay_hints,
+          vBindShorthand = inlay_hints,
+        },
+      },
+    },
     on_init = function(client)
       -- Shamelessly copied from: https://github.com/vuejs/language-tools/wiki/Neovim/1d846ecf8f2018ffc7ce1c0a62645a09d5d3c156
       client.handlers["tsserver/request"] = function(_, result, context)
@@ -59,7 +72,9 @@ local function _vuels3_config(user_options)
   }
 end
 
-local function _vuels2_config(user_options)
+local function _vuels2_config(vue_options, user_options)
+  local inlay_hints = vue_options.inlay_hints
+
   return {
     name = _name,
     cmd = _cmd,
@@ -70,16 +85,27 @@ local function _vuels2_config(user_options)
       typescript = { tsdk = lsp_shared.get_project_tslib() },
       vue = { hybridMode = true },
     },
+    settings = {
+      vue = {
+        inlayHints = {
+          destructuredProps = inlay_hints,
+          missingProps = inlay_hints,
+          inlineHandlerLeading = inlay_hints,
+          optionsWrapper = inlay_hints,
+          vBindShorthand = inlay_hints,
+        },
+      },
+    },
   }
 end
 
 local function _config(vue_options, user_options)
   if M.version() >= 3 then
     -- Adjust options for vue-language-server v3
-    return _vuels3_config(user_options)
+    return _vuels3_config(vue_options, user_options)
   end
 
-  return _vuels2_config(user_options)
+  return _vuels2_config(vue_options, user_options)
 end
 
 function M.set_user_commands(bufnr) end
