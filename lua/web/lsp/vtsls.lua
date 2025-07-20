@@ -3,23 +3,15 @@ local event = require("web.event")
 local utils = require("web.utils")
 local M = {}
 
-local _name = "tsserver"
-local _cmd = { "typescript-language-server", "--stdio" }
+local _name = "vtsls"
+local _cmd = { "vtsls", "--stdio" }
 
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" }
 M.root_dirs = { "tsconfig.json", "jsconfig.json", "package.json" }
 
 local function _validate()
   if vim.fn.executable(_cmd[1]) == 0 then
-    utils.report_error(string.format("%s: Command not found. Check :help web-tsserver-lsp for more info.", _cmd[1]))
-    return false
-  end
-
-  local is_global = vim.fn.executable("tsc") == 1
-  if not is_global and lsp_shared.get_project_tslib() == "" then
-    utils.report_error(
-      "Typescript not installed in project, run `npm install -D typescript`. Check :help web-tsserver-tsc for more info."
-    )
+    utils.report_error(string.format("%s: Command not found. Check :help web-vtsls for more info.", _cmd[1]))
     return false
   end
 
@@ -90,14 +82,42 @@ end
 
 local function _config(tsserver_options, user_options, lsp_config)
   local inlay_hints = tsserver_options.inlay_hints
-
-  local init_options = {
-    hostInfo = utils.host_info(),
-    tsserver = { path = lsp_shared.get_project_tslib() },
+  local settings = {
+    javascript = {
+      inlayHints = {
+        parameterNames = {
+          enabled = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
+          suppressWhenArgumentMatchesName = inlay_hints == "minimal",
+        },
+        parameterTypes = { enabled = inlay_hints == "all" },
+        variableTypes = {
+          enabled = inlay_hints == "all",
+          suppressWhenTypeMatchesName = inlay_hints == "minimal",
+        },
+        propertyDeclarationTypes = { enabled = inlay_hints == "all" },
+        functionLikeReturnTypes = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
+      },
+    },
+    typescript = {
+      inlayHints = {
+        parameterNames = {
+          enabled = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
+          suppressWhenArgumentMatchesName = inlay_hints == "minimal",
+        },
+        parameterTypes = { enabled = inlay_hints == "all" },
+        variableTypes = {
+          enabled = inlay_hints == "all",
+          suppressWhenTypeMatchesName = inlay_hints == "minimal",
+        },
+        propertyDeclarationTypes = { enabled = inlay_hints == "all" },
+        functionLikeReturnTypes = { enabled = inlay_hints == "minimal" or inlay_hints == "all" },
+        enumMemberValues = { enabled = inlay_hints == "all" },
+      },
+    },
   }
 
-  if lsp_config and lsp_config.init_options then
-    init_options = vim.tbl_extend("force", init_options, lsp_config.init_options)
+  if lsp_config and lsp_config.settings then
+    settings = vim.tbl_extend("force", settings, lsp_config.settings)
   end
 
   local default_definition_fn = vim.lsp.handlers["textDocument/definition"]
@@ -108,54 +128,34 @@ local function _config(tsserver_options, user_options, lsp_config)
     on_attach = user_options.on_attach,
     root_dir = utils.fs.find_nearest(M.root_dirs),
     handlers = { ["textDocument/definition"] = create_definition(default_definition_fn) },
-    init_options = init_options,
-    settings = {
-      javascript = {
-        inlayHints = {
-          includeInlayEnumMemberValueHints = inlay_hints == "all",
-          includeInlayFunctionLikeReturnTypeHints = inlay_hints == "minimal" or inlay_hints == "all",
-          includeInlayFunctionParameterTypeHints = inlay_hints == "all",
-          includeInlayParameterNameHints = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
-          includeInlayParameterNameHintsWhenArgumentMatchesName = inlay_hints == "all",
-          includeInlayPropertyDeclarationTypeHints = inlay_hints == "all",
-          includeInlayVariableTypeHints = inlay_hints == "all",
-          includeInlayVariableTypeHintsWhenTypeMatchesName = inlay_hints == "all",
-        },
-      },
-      typescript = {
-        inlayHints = {
-          includeInlayEnumMemberValueHints = inlay_hints == "all",
-          includeInlayFunctionLikeReturnTypeHints = inlay_hints == "minimal" or inlay_hints == "all",
-          includeInlayFunctionParameterTypeHints = inlay_hints == "all",
-          includeInlayParameterNameHints = (inlay_hints == "minimal" or inlay_hints == "all") and "all" or "none",
-          includeInlayParameterNameHintsWhenArgumentMatchesName = inlay_hints == "all",
-          includeInlayPropertyDeclarationTypeHints = inlay_hints == "all",
-          includeInlayVariableTypeHints = inlay_hints == "all",
-          includeInlayVariableTypeHintsWhenTypeMatchesName = inlay_hints == "all",
-        },
-      },
-    },
+    settings = settings,
   }
 end
 
 function M.set_user_commands(bufnr)
-  -- https://www.reddit.com/r/neovim/comments/lwz8l7/comment/gpkueno/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
-  vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverOrganizeImports", function()
-    vim.lsp.buf.execute_command({
-      command = "_typescript.organizeImports",
-      arguments = { vim.api.nvim_buf_get_name(0) },
-      title = "",
-    })
-  end, {})
+  vim.api.nvim_buf_create_user_command(bufnr, "WebOrganizeImports", function()
+    local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "vtsls" })
+    if vim.tbl_isempty(clients) then
+      return
+    end
 
-  vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverGoToSourceDefinition", function()
-    local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "tsserver" })
+    local client = clients[1]
+
+    client:exec_cmd({
+      command = "typescript.organizeImports",
+      arguments = { vim.api.nvim_buf_get_name(0) },
+    })
+  end)
+
+  vim.api.nvim_buf_create_user_command(bufnr, "WebGoToSourceDefinition", function()
+    local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "vtsls" })
     if vim.tbl_isempty(clients) then
       return
     end
 
     local client = clients[1]
     local winid = vim.api.nvim_get_current_win()
+    local params = vim.lsp.util.make_position_params(winid)
     local handler = function(_, result)
       if result == nil or vim.tbl_isempty(result) then
         return
@@ -172,12 +172,11 @@ function M.set_user_commands(bufnr)
 
     vim.api.nvim_notify("web: Opening source file", vim.log.levels.WARN, {})
 
-    local params = vim.lsp.util.make_position_params(winid)
-    client.request("workspace/executeCommand", {
-      command = "_typescript.goToSourceDefinition",
+    client:exec_cmd({
+      command = "typescript.goToSourceDefinition",
       arguments = { params.textDocument.uri, params.position },
-    }, handler, bufnr)
-  end, {})
+    }, { bufnr = bufnr }, handler)
+  end)
 end
 
 function M.setup(user_options, lsp_config)
@@ -194,7 +193,7 @@ function M.setup(user_options, lsp_config)
         return
       end
 
-      vim.lsp.start(_config(user_options.lsp.tsserver, user_options, lsp_config))
+      vim.lsp.start(_config(user_options.lsp.vtsls, user_options, lsp_config))
       M.set_user_commands(ev.buf)
     end,
   })

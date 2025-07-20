@@ -3,12 +3,13 @@
 The all-in-one solution to setup a web development environment in neovim.
 
 > [!IMPORTANT]
-> Still under development but feel free to use and give feedback on anything missing.
+> Still a work in progress but stable for use.
 
 ## Features
 
 - No [`lspconfig` plugin][lspconfig-url] needed, using builtin `vim.lsp.start()`
-- Automatically setup lsp servers based on project (tsserver, eslint, css, html, volar, svelte, astrojs, tailwindcss, WIP: angularls)
+- Automatically setup lsp servers based on project (tsserver, eslint, css, html, vue, svelte, astrojs, tailwindcss, WIP:
+  angularls)
 - Automatically setup formatters (prettier, WIP: biomejs)
 - Format code - `:WebLspFormat`, additional set the `format_on_save` option to format on save
 - Run code actions on save feature (WIP)
@@ -18,7 +19,8 @@ The all-in-one solution to setup a web development environment in neovim.
 - Inlay hints (if using nvim 0.10 and above, opt-out feature)
 - Tsserver specific
   - Organize imports - `:WebTsserverOrganizeImports`
-  - Go to source definition, helpful when you do not want d.ts but direct to source file (for example, go to .js file instead of d.ts definition) - `:WebTsserverGoToSourceDefinition`
+  - Go to source definition, helpful when you do not want d.ts but direct to source file (for example, go to .js file
+    instead of d.ts definition) - `:WebTsserverGoToSourceDefinition`
 - Eslint specific
   - Fix eslint errors - `:WebEslintFixAll`
 - Run `package.json` scripts via `:WebRun`
@@ -32,15 +34,17 @@ The all-in-one solution to setup a web development environment in neovim.
 Plug 'creativenull/web.nvim'
 ```
 
-
 ### lazy.nvim
 
 ```lua
 {
   'creativenull/web.nvim',
-  config = function()
-    -- ...
-  end,
+  opts = {
+    capabilities = vim.lsp.protocol.make_client_capabilities(),
+    on_attach = function(client, bufnr)
+      -- ...
+    end,
+  },
 }
 ```
 
@@ -63,8 +67,7 @@ require('web').setup({
 })
 ```
 
-Following is the code example with all the settings, to show all the options and
-their default values.
+Following is the code example with all the settings, to show all the options and their default values.
 
 ```lua
 -- You can use that exact same on_attach you have already defined for lspconfig
@@ -96,8 +99,8 @@ require('web').setup({
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
 
-    -- Volar.js (Vue) LSP settings
-    volar = {
+    -- Vue LSP settings
+    vue = {
       disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1,
     },
@@ -148,15 +151,13 @@ require('web').setup({
 
 ### Capabilities
 
-If using nvim-cmp or similar that provide you with custom capabilities, then you
-can use that. For example:
+If using nvim-cmp or similar that provide you with custom capabilities, then you can use that. For example:
 
 ```lua
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 ```
 
-Or if you have a custom completion plugin that doesn't come with that support
-then use the following:
+Or if you have a custom completion plugin that doesn't come with that support then use the following:
 
 ```lua
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -171,6 +172,29 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
     'detail',
     'additionalTextEdits',
   },
+}
+```
+
+## Notes
+
+### Vue language server (difference between v2 and v3)
+
+#### v3
+
+Since the release of vue-language-server v3, the language server now requires vtsls server to be installed as an
+additional dependency. Ensure that you have it installed via Mason.nvim or with `npm install -g @vtsls/language-server`.
+
+#### v2
+
+If you decide to stick with v2 of the vue language server, then you don't have to do anything as this is not being
+phased out. Plan is to phase it out if v4 of the language server is released.
+
+However, if you are having issues like `Invalid 'col': out of range` then it's most likely a inlay hint issue and I
+would suggest setting it to false (`inlay_hints = false`) for now.
+
+```lua
+vue = {
+  inlay_hints = false,
 }
 ```
 
