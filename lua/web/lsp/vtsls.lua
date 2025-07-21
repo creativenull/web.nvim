@@ -142,7 +142,7 @@ function M.set_user_commands(bufnr)
     local client = clients[1]
 
     client:exec_cmd({
-      command = "typescript.organizeImports",
+      command = "typescript.sortImports",
       arguments = { vim.api.nvim_buf_get_name(0) },
     })
   end, {})
