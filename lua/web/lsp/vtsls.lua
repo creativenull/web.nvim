@@ -134,7 +134,7 @@ end
 
 function M.set_user_commands(bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "WebOrganizeImports", function()
-    local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "vtsls" })
+    local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "vtsls" })
     if vim.tbl_isempty(clients) then
       return
     end
@@ -148,7 +148,7 @@ function M.set_user_commands(bufnr)
   end, {})
 
   vim.api.nvim_buf_create_user_command(bufnr, "WebGoToSourceDefinition", function()
-    local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "vtsls" })
+    local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "vtsls" })
     if vim.tbl_isempty(clients) then
       return
     end
