@@ -52,7 +52,6 @@ function M.setup(user_options)
         return
       end
 
-
       -- TODO: find a way to avoid this situation, if possible
       if vim.endswith(ev.file, ".html") then
         -- Only start the html server on html files and not just
