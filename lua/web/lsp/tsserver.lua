@@ -141,21 +141,27 @@ end
 function M.set_user_commands(bufnr)
   -- https://www.reddit.com/r/neovim/comments/lwz8l7/comment/gpkueno/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
   vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverOrganizeImports", function()
-    vim.lsp.buf.execute_command({
+    local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "tsserver" })
+    if vim.tbl_isempty(clients) then
+      return
+    end
+
+    local client = clients[1]
+    client:exec_cmd({
       command = "_typescript.organizeImports",
       arguments = { vim.api.nvim_buf_get_name(0) },
-      title = "",
-    })
+    }, { bufnr = bufnr })
   end, {})
 
   vim.api.nvim_buf_create_user_command(bufnr, "WebTsserverGoToSourceDefinition", function()
-    local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "tsserver" })
+    local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "tsserver" })
     if vim.tbl_isempty(clients) then
       return
     end
 
     local client = clients[1]
     local winid = vim.api.nvim_get_current_win()
+    local params = vim.lsp.util.make_position_params(winid)
     local handler = function(_, result)
       if result == nil or vim.tbl_isempty(result) then
         return
@@ -172,11 +178,10 @@ function M.set_user_commands(bufnr)
 
     vim.api.nvim_notify("web: Opening source file", vim.log.levels.WARN, {})
 
-    local params = vim.lsp.util.make_position_params(winid)
-    client.request("workspace/executeCommand", {
+    client:exec_cmd({
       command = "_typescript.goToSourceDefinition",
       arguments = { params.textDocument.uri, params.position },
-    }, handler, bufnr)
+    }, { bufnr = bufnr }, handler)
   end, {})
 end
 
