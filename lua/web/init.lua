@@ -112,7 +112,8 @@ local function detected_vue(root_files)
     local packageJson = utils.fs.readfile(filepath)
     packageJson = vim.json.decode(packageJson)
 
-    return packageJson.dependencies.vue ~= nil or packageJson.devDependencies.vue ~= nil
+    return (packageJson.dependencies ~= nil and packageJson.dependencies.vue ~= nil)
+      or (packageJson.devDependencies ~= nil and packageJson.devDependencies.vue ~= nil)
   end
 
   return false
