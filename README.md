@@ -9,7 +9,7 @@ The all-in-one solution to setup a web development environment in neovim.
 
 - No [`lspconfig` plugin][lspconfig-url] needed, using builtin `vim.lsp.start()`
 - Automatically setup language servers based on project:
-  - Generic JS/TS project: [typescript-language-server][typescript-language-server], [vtsls][vtsls],
+  - Generic JS/TS project: [typescript-language-server][typescript-language-server] or [vtsls][vtsls],
     [eslint, css, html, json][vscode-langservers-extracted], [tailwindcss][tailwindcss-ls]
   - Vue project via [`vue-language-server`][vue-language-server] + Generic language servers
   - Svelte project: [`svelteserver`][svelteserver] + Generic language servers
