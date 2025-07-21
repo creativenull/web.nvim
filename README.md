@@ -8,11 +8,15 @@ The all-in-one solution to setup a web development environment in neovim.
 ## Features
 
 - No [`lspconfig` plugin][lspconfig-url] needed, using builtin `vim.lsp.start()`
-- Automatically setup lsp servers based on project (tsserver, eslint, css, html, vue, svelte, astrojs, tailwindcss, WIP:
-  angularls)
-- Automatically setup formatters (prettier, WIP: biomejs)
+- Automatically setup language servers based on project:
+  - Generic JS/TS project: [typescript-language-server][typescript-language-server], [vtsls][vtsls],
+    [eslint, css, html, jsson][vscode-langservers-extracted], [tailwindcss][tailwindcss-ls]
+  - Vue project via [`vue-language-server`][vue-language-server] + Generic language servers
+  - Svelte project: [`svelteserver`][svelteserver] + Generic language servers
+  - Astro project: [`astro-ls`][astro-ls] + Generic language servers
+- Automatically setup CLI tools:
+  - [prettier](https://prettier.io/)
 - Format code - `:WebLspFormat`, additional set the `format_on_save` option to format on save
-- Run code actions on save feature (WIP)
 - Refactor code - `:WebRefactorAction`
 - Quickfix code - `:WebQuickfixAction`
 - Source action - `:WebSourceAction`
@@ -24,7 +28,14 @@ The all-in-one solution to setup a web development environment in neovim.
 - Eslint specific
   - Fix eslint errors - `:WebEslintFixAll`
 - Run `package.json` scripts via `:WebRun`
-- Debugging: [nvim-dap][nvim-dap-url] is required (WIP)
+
+## Features TODO
+
+- Add angular language server
+- Add biomejs linter/formatter
+- Add oxlint linter/formatter
+- Run code actions on save feature
+- Debugging via [nvim-dap][nvim-dap-url]
 
 ## Install
 
@@ -201,3 +212,10 @@ vue = {
 [lspconfig-url]: https://github.com/neovim/nvim-lspconfig
 [mason-url]: https://github.com/williamboman/mason.nvim
 [nvim-dap-url]: https://github.com/mfussenegger/nvim-dap
+[typescript-language-server]: https://github.com/typescript-language-server/typescript-language-server
+[vtsls]: https://github.com/yioneko/vtsls
+[vscode-langservers-extracted]: https://github.com/hrsh7th/vscode-langservers-extracted
+[tailwindcss-ls]: https://github.com/tailwindlabs/tailwindcss-intellisense
+[vue-language-server]: https://github.com/vuejs/language-tools
+[svelteserver]: https://github.com/sveltejs/language-tools
+[astro-ls]: https://github.com/withastro/language-tools
