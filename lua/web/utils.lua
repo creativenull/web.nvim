@@ -13,18 +13,21 @@ end
 
 function M.fs.readfile(filepath)
   local fd = vim.loop.fs_open(filepath, "r", 438)
-  local stat = vim.loop.fs_fstat(fd)
-
-  if stat then
-    local contents = vim.loop.fs_read(fd, stat.size)
-    vim.loop.fs_close(fd)
-
-    return contents
+  if not fd then
+    return nil
   end
 
+  local stat = vim.loop.fs_fstat(fd)
+  if not stat then
+    vim.loop.fs_close(fd)
+
+    return nil
+  end
+
+  local contents = vim.loop.fs_read(fd, stat.size)
   vim.loop.fs_close(fd)
 
-  return nil
+  return contents
 end
 
 function M.fs.get_package_manager()
