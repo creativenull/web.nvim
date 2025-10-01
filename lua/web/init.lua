@@ -110,6 +110,10 @@ local function detected_vue(root_files)
   if packageJsonFilepath ~= nil then
     local filepath = packageJsonFilepath .. "/package.json"
     local packageJson = utils.fs.readfile(filepath)
+    if not packageJson then
+      return false
+    end
+
     packageJson = vim.json.decode(packageJson)
 
     return (packageJson.dependencies ~= nil and packageJson.dependencies.vue ~= nil)

@@ -7,7 +7,12 @@ local function handle_cmd_complete()
     return {}
   end
 
-  local json = vim.json.decode(utils.fs.readfile(packagejson_filepath))
+  local packageJsonContents = utils.fs.readfile(packagejson_filepath)
+  if not packageJsonContents then
+    return {}
+  end
+
+  local json = vim.json.decode(packageJsonContents)
   if vim.tbl_isempty(json.scripts) then
     return {}
   end
