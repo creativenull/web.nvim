@@ -4,7 +4,7 @@ local utils = require("web.utils")
 local M = {}
 
 local _name = "deno"
-local _cmd = { "deno lsp", "--stdio" }
+local _cmd = { "deno", "lsp" }
 
 M.filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "jsonc", "markdown" }
 M.root_dirs = { "deno.json", "deno.jsonc" }
