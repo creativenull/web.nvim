@@ -2,18 +2,17 @@
 
 The all-in-one solution to setup a web development environment in neovim.
 
-> [!IMPORTANT]
-> Still a work in progress but stable for use.
-
 ## Features
 
-- No [`lspconfig` plugin][lspconfig-url] needed, using builtin `vim.lsp.start()`
+- No [`lspconfig` plugin][lspconfig-url] needed, using builtin `vim.lsp` APIs
 - Automatically setup language servers based on project:
   - Generic JS/TS project: [typescript-language-server][typescript-language-server] or [vtsls][vtsls],
     [eslint, css, html, json][vscode-langservers-extracted], [tailwindcss][tailwindcss-ls]
   - Vue project via [`vue-language-server`][vue-language-server] + Generic language servers
   - Svelte project: [`svelteserver`][svelteserver] + Generic language servers
   - Astro project: [`astro-ls`][astro-ls] + Generic language servers
+  - Deno project: [`denols`][denols] + [css][vscode-langservers-extracted], [html][vscode-langservers-extracted],
+    [json][vscode-langservers-extracted] and [tailwindcss][tailwindcss-ls]
 - Automatically setup CLI tools:
   - [prettier](https://prettier.io/)
 - Format code - `:WebLspFormat`, additional set the `format_on_save` option to format on save
@@ -156,6 +155,11 @@ require('web').setup({
       disabled = false,
       additional_filetypes = nil,
     },
+
+    -- Deno LSP settings
+    deno = {
+      disabled = false,
+    },
   },
 })
 ```
@@ -219,3 +223,4 @@ vue = {
 [vue-language-server]: https://github.com/vuejs/language-tools
 [svelteserver]: https://github.com/sveltejs/language-tools
 [astro-ls]: https://github.com/withastro/language-tools
+[denols]: https://docs.deno.com/runtime/reference/cli/lsp
