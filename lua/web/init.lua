@@ -101,28 +101,6 @@ local function detected(root_files)
   return utils.fs.find_nearest(root_files) ~= nil
 end
 
----Check if it's a vue project by reading the package.json and checking if vue dep is present
----@param root_files string[]
----@return boolean
-local function detected_vue(root_files)
-  local packageJsonFilepath = utils.fs.find_nearest(root_files)
-
-  if packageJsonFilepath ~= nil then
-    local filepath = packageJsonFilepath .. "/package.json"
-    local packageJson = utils.fs.readfile(filepath)
-    if not packageJson then
-      return false
-    end
-
-    packageJson = vim.json.decode(packageJson)
-
-    return (packageJson.dependencies ~= nil and packageJson.dependencies.vue ~= nil)
-      or (packageJson.devDependencies ~= nil and packageJson.devDependencies.vue ~= nil)
-  end
-
-  return false
-end
-
 function M.setup(user_options)
   local valid, mod = pcall(validator.validate_requirements)
   if not valid then
@@ -203,7 +181,7 @@ function M.setup(user_options)
     - Detect project
     - Register autocmd to run lsp servers with options
   --]]
-  if not user_options.lsp.vue.disabled and detected_vue(require("web.lsp.vue").root_dirs) then
+  if not user_options.lsp.vue.disabled and detected(require("web.lsp.vue").root_dirs) then
     local vuels = require("web.lsp.vue")
     vuels.setup(user_options)
 
