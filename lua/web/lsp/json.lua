@@ -6,7 +6,7 @@ local _name = "json_ls"
 local _cmd = { "vscode-json-language-server", "--stdio" }
 
 M.filetypes = { "json" }
-M.root_dirs = { "package.json" }
+M.root_dirs = { "package.json", "deno.json", "deno.jsonc" }
 
 local function _validate()
   if vim.fn.executable(_cmd[1]) == 0 then

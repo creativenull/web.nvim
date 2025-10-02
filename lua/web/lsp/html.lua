@@ -6,7 +6,7 @@ local _name = "html_ls"
 local _cmd = { "vscode-html-language-server", "--stdio" }
 
 M.filetypes = { "html" }
-M.root_dirs = { "package.json" }
+M.root_dirs = { "package.json", "deno.json", "deno.jsonc" }
 M.capabilities = vim.lsp.protocol.make_client_capabilities()
 
 local function _validate()

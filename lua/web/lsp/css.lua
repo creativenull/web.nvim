@@ -6,7 +6,7 @@ local _name = "css_ls"
 local _cmd = { "vscode-css-language-server", "--stdio" }
 
 M.filetypes = { "css", "sccs", "sass", "less" }
-M.root_dirs = { "package.json" }
+M.root_dirs = { "package.json", "deno.json", "deno.jsonc" }
 M.capabilities = vim.lsp.protocol.make_client_capabilities()
 
 local function _validate()
