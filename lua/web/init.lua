@@ -94,6 +94,10 @@ local default_user_options = {
       disabled = false,
       additional_filetypes = nil,
     },
+
+    deno = {
+      disabled = false,
+    },
   },
 }
 
@@ -246,6 +250,18 @@ function M.setup(user_options)
     end
 
     return
+  end
+
+  --[[
+  Deno Project
+  --]]
+  if not user_options.lsp.deno.disabled and detected(require("web.lsp.deno").root_dirs) then
+    require("web.lsp.deno").setup(user_options)
+
+    -- Enable tailwindcss lsp for deno projects
+    if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
+      require("web.lsp.tailwindcss").setup(user_options)
+    end
   end
 end
 
