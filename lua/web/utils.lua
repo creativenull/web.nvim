@@ -8,6 +8,10 @@ end
 M.fs = {}
 
 function M.fs.find_nearest(list)
+  if vim.fs.root ~= nil then
+    return vim.fs.root(0, list)
+  end
+
   return vim.fs.dirname(vim.fs.find(list, { upward = true })[1])
 end
 
