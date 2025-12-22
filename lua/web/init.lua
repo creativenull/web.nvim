@@ -133,6 +133,55 @@ local function detected_vue(root_files)
   return false
 end
 
+local function load_vue(user_options)
+  local vuels = require("web.lsp.vue")
+  vuels.setup(user_options)
+
+  if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
+    require("web.lsp.tailwindcss").setup(user_options)
+  end
+
+  if not user_options.lsp.vtsls.disabled and detected(require("web.lsp.vtsls").root_dirs) then
+    -- Only enable vtsls if not disabled by user and root_dirs are present
+    local location = require("web.lsp.vue").get_server_path()
+    if vuels.version() >= 3 and location ~= "" then
+      -- vtsls setup for vue-language-server v3
+      require("web.lsp.vtsls").setup(user_options, {
+        filetypes = { "vue" },
+        settings = {
+          vtsls = {
+            tsserver = {
+              globalPlugins = {
+                {
+                  name = "@vue/typescript-plugin",
+                  location = location,
+                  languages = { "vue" },
+                  configNamespace = "typescript",
+                },
+              },
+            },
+          },
+        },
+      })
+    elseif vuels.version() < 3 and location ~= "" then
+      -- tsserver setup for vue-language-server v2
+      require("web.lsp.tsserver").setup(user_options, {
+        filetypes = { "vue" },
+        init_options = {
+          plugins = {
+            { name = "@vue/typescript-plugin", location = location, languages = { "vue" } },
+          },
+        },
+      })
+    end
+  end
+
+  -- Eslint support
+  if not user_options.lsp.eslint.disabled and detected(require("web.lsp.eslint").root_dirs) then
+    require("web.lsp.eslint").setup(user_options, { filetyes = { "vue" } })
+  end
+end
+
 function M.setup(user_options)
   local valid, mod = pcall(validator.validate_requirements)
   if not valid then
@@ -214,52 +263,9 @@ function M.setup(user_options)
     - Register autocmd to run lsp servers with options
   --]]
   if not user_options.lsp.vue.disabled and detected_vue(require("web.lsp.vue").root_dirs) then
-    local vuels = require("web.lsp.vue")
-    vuels.setup(user_options)
-
-    if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
-      require("web.lsp.tailwindcss").setup(user_options)
-    end
-
-    if not user_options.lsp.vtsls.disabled and detected(require("web.lsp.vtsls").root_dirs) then
-      -- Only enable vtsls if not disabled by user and root_dirs are present
-      local location = require("web.lsp.vue").get_server_path()
-      if vuels.version() >= 3 and location ~= "" then
-        -- vtsls setup for vue-language-server v3
-        require("web.lsp.vtsls").setup(user_options, {
-          filetypes = { "vue" },
-          settings = {
-            vtsls = {
-              tsserver = {
-                globalPlugins = {
-                  {
-                    name = "@vue/typescript-plugin",
-                    location = location,
-                    languages = { "vue" },
-                    configNamespace = "typescript",
-                  },
-                },
-              },
-            },
-          },
-        })
-      elseif vuels.version() < 3 and location ~= "" then
-        -- tsserver setup for vue-language-server v2
-        require("web.lsp.tsserver").setup(user_options, {
-          filetypes = { "vue" },
-          init_options = {
-            plugins = {
-              { name = "@vue/typescript-plugin", location = location, languages = { "vue" } },
-            },
-          },
-        })
-      end
-    end
-
-    -- Eslint support
-    if not user_options.lsp.eslint.disabled and detected(require("web.lsp.eslint").root_dirs) then
-      require("web.lsp.eslint").setup(user_options, { filetyes = { "vue" } })
-    end
+    vim.defer_fn(function()
+      load_vue(user_options)
+    end, 100)
 
     return
   end
