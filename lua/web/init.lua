@@ -182,6 +182,18 @@ local function load_vue(user_options)
   end
 end
 
+local function load_tsserver(user_options)
+  require("web.lsp.tsserver").setup(user_options)
+
+  if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
+    require("web.lsp.tailwindcss").setup(user_options)
+  end
+
+  if not user_options.lsp.eslint.disabled and detected(require("web.lsp.eslint").root_dirs) then
+    require("web.lsp.eslint").setup(user_options)
+  end
+end
+
 function M.setup(user_options)
   local valid, mod = pcall(validator.validate_requirements)
   if not valid then
@@ -276,15 +288,9 @@ function M.setup(user_options)
     - Register autocmd to run lsp servers with options
   --]]
   if not user_options.lsp.tsserver.disabled and detected(require("web.lsp.tsserver").root_dirs) then
-    require("web.lsp.tsserver").setup(user_options)
-
-    if not user_options.lsp.tailwindcss.disabled and detected(require("web.lsp.tailwindcss").root_dirs) then
-      require("web.lsp.tailwindcss").setup(user_options)
-    end
-
-    if not user_options.lsp.eslint.disabled and detected(require("web.lsp.eslint").root_dirs) then
-      require("web.lsp.eslint").setup(user_options)
-    end
+    vim.defer_fn(function()
+      load_tsserver(user_options)
+    end, 100)
 
     return
   end
