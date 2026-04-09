@@ -119,6 +119,9 @@ local function detected_vue(root_files)
     end
 
     packageJson = vim.json.decode(packageJson)
+    if not packageJson then
+      return false
+    end
 
     local packages = { "vue", "nuxt" }
     for _, pkg in ipairs(packages) do
