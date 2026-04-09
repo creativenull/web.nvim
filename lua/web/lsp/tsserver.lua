@@ -102,10 +102,21 @@ local function _config(tsserver_options, user_options, lsp_config)
 
   local default_definition_fn = vim.lsp.handlers["textDocument/definition"]
 
+  local custom_on_attach_fn = function(client, bufnr)
+    -- Disable semantic providers on vue files
+    if vim.bo.filetype == "vue" then
+      client.server_capabilities.semanticTokensProvider.full = false
+    else
+      client.server_capabilities.semanticTokensProvider.full = true
+    end
+
+    user_options.on_attach(client, bufnr)
+  end
+
   return {
     name = _name,
     cmd = _cmd,
-    on_attach = user_options.on_attach,
+    on_attach = custom_on_attach_fn,
     root_dir = utils.fs.find_nearest(M.root_dirs),
     handlers = { ["textDocument/definition"] = create_definition(default_definition_fn) },
     init_options = init_options,
