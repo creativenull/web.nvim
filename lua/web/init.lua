@@ -41,20 +41,26 @@ local default_user_options = {
 
   lsp = {
     json = { disabled = false },
+
     css = { disabled = false },
+
     html = { disabled = false },
+
     astro = {
       disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
+
     vue = {
       disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1,
     },
+
     svelte = {
       disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
+
     tsserver = {
       disabled = false,
 
