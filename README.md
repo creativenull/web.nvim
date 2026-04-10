@@ -113,6 +113,7 @@ require('web').setup({
     vue = {
       disabled = false,
       inlay_hints = vim.fn.has("nvim-0.10") == 1,
+      ts_driver = "vtsls", -- Can be "vtsls" or "tsserver"
     },
 
     -- Svelte LSP settings
@@ -138,6 +139,14 @@ require('web').setup({
         "source.removeUnusedImports.ts",
         "source.sortImports.ts",
       },
+    },
+
+    vtsls = {
+      disabled = false,
+
+      -- Inlay hints are opt-out feature in nvim >= v0.10
+      -- which means they will be enabled by default from v0.10 and onwards
+      inlay_hints = vim.fn.has("nvim-0.10") == 1 and "minimal" or "",
     },
 
     -- Eslint LSP settings
