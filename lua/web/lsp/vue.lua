@@ -25,6 +25,27 @@ local function _validate()
   return true
 end
 
+local function _handle_tsserverRequest(client_name, client, result, context)
+  local clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = client_name })
+
+  if #clients == 0 then
+    return
+  end
+
+  local ts_client = clients[1]
+  local param = unpack(result)
+  local id, command, payload = unpack(param)
+
+  ts_client:exec_cmd({
+    command = "typescript.tsserverRequest",
+    arguments = { command, payload },
+  }, { bufnr = context.bufnr }, function(_, r)
+    if (r and r.body) and id then
+      client:notify("tsserver/response", { { id, r.body } })
+    end
+  end)
+end
+
 local function _vuels3_config(vue_options, user_options)
   local inlay_hints = vue_options.inlay_hints
 
@@ -48,25 +69,9 @@ local function _vuels3_config(vue_options, user_options)
     on_init = function(client)
       -- Shamelessly copied from: https://github.com/vuejs/language-tools/wiki/Neovim/1d846ecf8f2018ffc7ce1c0a62645a09d5d3c156
       client.handlers["tsserver/request"] = function(_, result, context)
-        local clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "vtsls" })
-
-        if #clients == 0 then
-          utils.warn("vtsls: Command not found. Install using Mason or `npm install -g @vtsls/language-server`.")
-
-          return
+        if vue_options.ts_driver == "vtsls" or vue_options.ts_driver == "tsserver" then
+          _handle_tsserverRequest(vue_options.ts_driver, client, result, context)
         end
-
-        local ts_client = clients[1]
-        local param = unpack(result)
-        local id, command, payload = unpack(param)
-
-        ts_client:exec_cmd(
-          { command = "typescript.tsserverRequest", arguments = { command, payload } },
-          { bufnr = context.bufnr },
-          function(_, r)
-            client:notify("tsserver/response", { { id, r.body } })
-          end
-        )
       end
     end,
   }
